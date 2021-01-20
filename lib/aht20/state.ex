@@ -17,7 +17,7 @@ defmodule AHT20.State do
       iex> AHT20.State.from_byte(0b0001_1100)
       %AHT20.State{busy: false, calibrated: true, mode: :nor}
   """
-  @spec from_byte(byte) :: %{busy: boolean, calibrated: boolean, mode: :cmd | :cyc | :nor}
+  @spec from_byte(byte) :: t
   def from_byte(state_byte) do
     <<busy::1, mode::2, _::1, cal::1, _::3>> = <<state_byte>>
 
