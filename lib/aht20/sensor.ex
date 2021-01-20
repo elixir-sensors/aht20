@@ -40,7 +40,7 @@ defmodule AHT20.Sensor do
   defstruct [:i2c_bus, :i2c_ref, :i2c_address]
 
   @typedoc """
-  The internal state.
+  Represents the connection to the sensor.
   """
   @type t :: %__MODULE__{
           i2c_bus: i2c_bus,
@@ -49,6 +49,7 @@ defmodule AHT20.Sensor do
         }
 
   @doc """
+  Connects to the sensor.
   For more info. please refer to the data sheet (section 5.4).
   """
   @spec start(config) :: {:ok, t} | {:error, any}
@@ -112,7 +113,7 @@ defmodule AHT20.Sensor do
   @spec read_state(t) :: map | {:error, any}
   def read_state(%{i2c_ref: i2c_ref, i2c_address: i2c_address}) do
     {:ok, <<sensor_state>>} = Circuits.I2C.write_read(i2c_ref, i2c_address, [@aht20_cmd_read_state], 1)
-    AHT20.Calc.parse_sensor_state(sensor_state)
+    AHT20.State.from_byte(sensor_state)
   rescue
     e -> {:error, e}
   end

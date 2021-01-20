@@ -56,26 +56,4 @@ defmodule AHT20.Calc do
     <<temperature::20>> = <<temp1::4, temp2, temp3>>
     temperature
   end
-
-  @doc """
-  Parses the sensor state byte into a human-readable map.
-
-      iex> AHT20.Calc.parse_sensor_state(0b0001_1100)
-      %{busy: false, calibrated: true, mode: :nor}
-  """
-  @spec parse_sensor_state(byte) :: %{busy: boolean, calibrated: boolean, mode: :cmd | :cyc | :nor}
-  def parse_sensor_state(state_byte) do
-    <<busy::1, mode::2, _::1, cal::1, _::3>> = <<state_byte>>
-
-    %{
-      busy: busy == 1,
-      mode:
-        case mode do
-          0 -> :nor
-          1 -> :cyc
-          _ -> :cmd
-        end,
-      calibrated: cal == 1
-    }
-  end
 end
