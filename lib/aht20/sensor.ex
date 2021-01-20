@@ -11,15 +11,11 @@ defmodule AHT20.Sensor do
       {:ok, sensor} = AHT20.Sensor.start()
 
       {:ok, output} = AHT20.Sensor.read_data(sensor)
-      output |> AHT20.Sensor.relative_humidity()
-      output |> AHT20.Sensor.celsius()
-      output |> AHT20.Sensor.fahrenheit()
 
       AHT20.Sensor.read_state(sensor)
   """
 
   require Logger
-  import AHT20.Calc
   use Bitwise, only_operators: true
 
   @default_i2c_bus "i2c-1"
@@ -116,7 +112,7 @@ defmodule AHT20.Sensor do
   @spec read_state(t) :: map | {:error, any}
   def read_state(%{i2c_ref: i2c_ref, i2c_address: i2c_address}) do
     {:ok, <<sensor_state>>} = Circuits.I2C.write_read(i2c_ref, i2c_address, [@aht20_cmd_read_state], 1)
-    parse_sensor_state(sensor_state)
+    AHT20.Calc.parse_sensor_state(sensor_state)
   rescue
     e -> {:error, e}
   end
