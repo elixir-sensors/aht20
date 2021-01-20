@@ -22,8 +22,12 @@ defmodule AHT20.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      # {:dep_from_hexpm, "~> 0.3.0"},
-      # {:dep_from_git, git: "https://github.com/elixir-lang/my_dep.git", tag: "0.1.0"}
+      {:circuits_i2c, "~> 0.1"},
+      # {:mox, "~> 1.0.0", only: :test},
+      {:mix_test_watch, "~> 1.0", only: :dev, runtime: false},
+      # {:ex_doc, "~> 0.14", only: :dev, runtime: false},
+      # {:credo, "~> 1.4", only: [:dev, :test], runtime: false},
+      # {:dialyxir, "~> 1.0", only: [:dev, :test], runtime: false}
     ]
   end
 end
