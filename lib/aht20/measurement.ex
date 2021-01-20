@@ -1,7 +1,8 @@
 defmodule AHT20.Measurement do
   @moduledoc """
-  One sensor measurement report
-  The raw temperature and humidity values are computed directly from the sensor. All other values are derived.
+  One sensor measurement report.
+  Only the raw temperature and raw humidity values are computed directly from the sensor.
+  All other values are derived.
   """
 
   defstruct [:temperature_c, :temperature_f, :relative_humidity, :raw_humidity, :raw_temperature]

@@ -1,21 +1,5 @@
 defmodule AHT20 do
-  @moduledoc """
-  Documentation for `AHT20`.
-
-    ## Examples
-
-      # Detect I2C devices.
-      Circuits.I2C.detect_devices
-
-      # Connect to the sensor.
-      {:ok, sensor} = AHT20.start()
-
-      # Read humidity and temperature from the sensor.
-      {:ok, mearuement} = AHT20.read_data(sensor)
-
-      # Read the sensor state from the sensor.
-      {:ok, sensor_state} = AHT20.read_state(sensor)
-  """
+  @moduledoc false
 
   @spec start(list | map) :: {:ok, AHT20.Sensor.t()} | {:error, any}
   def start(config) do
