@@ -58,6 +58,7 @@ defmodule AHT20.Sensor do
     Process.sleep(40)
     :ok = reset(aht20)
     :ok = init(aht20)
+
     {:ok, aht20}
   rescue
     e -> {:error, e}
@@ -65,11 +66,16 @@ defmodule AHT20.Sensor do
 
   @doc """
   Restarts the sensor system without having to turn off and turn on the power again.
+  Soft reset takes no longer than 20ms.
   For more info. please refer to the data sheet (section 5.5).
   """
   @spec reset(t) :: :ok | {:error, any}
   def reset(%{i2c_ref: i2c_ref, i2c_address: i2c_address}) do
-    Circuits.I2C.write(i2c_ref, i2c_address, [@aht20_cmd_soft_reset])
+    :ok = Circuits.I2C.write(i2c_ref, i2c_address, [@aht20_cmd_soft_reset])
+    Process.sleep(20)
+    :ok
+  rescue
+    e -> {:error, e}
   end
 
   # Initialize the sensor system.
