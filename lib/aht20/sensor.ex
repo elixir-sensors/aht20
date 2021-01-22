@@ -16,8 +16,8 @@ defmodule AHT20.Sensor do
   @aht20_cmd_soft_reset 0xBA
   @aht20_cmd_read_state 0x71
 
-  @type i2c_bus :: AHT20.I2C.bus_name()
-  @type i2c_address :: AHT20.I2C.address()
+  @type i2c_bus :: AHT20.I2C.Behaviour.bus_name()
+  @type i2c_address :: AHT20.I2C.Behaviour.address()
 
   @typedoc """
   The configuration options.

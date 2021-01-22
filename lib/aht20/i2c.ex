@@ -1,20 +1,12 @@
-defmodule AHT20.I2C do
-  @moduledoc false
+defmodule AHT20.I2C.Behaviour do
+  @moduledoc """
+  Defines a behaviour required for I2C device. Based on [Circuits I2C's API](https://github.com/elixir-circuits/circuits_i2c/blob/main/lib/i2c.ex).
+  """
 
   @type bus_name :: String.t()
   @type address :: 0..127
   @type data :: binary
   @type opts :: [{:retries, non_neg_integer}]
-end
-
-defmodule AHT20.I2C.Behaviour do
-  @moduledoc """
-  Defines a behaviour required for I2C device. Based on [Circuits I2C's API](https://github.com/elixir-circuits/circuits_i2c/blob/main/lib/i2c.ex).
-  """
-  @type bus_name :: AHT20.I2C.bus_name()
-  @type address :: AHT20.I2C.address()
-  @type data :: AHT20.I2C.data()
-  @type opts :: AHT20.I2C.opts()
 
   @callback open(bus_name) :: {:ok, reference} | {:error, any}
   @callback write(reference, address, data, opts) :: :ok | {:error, any}

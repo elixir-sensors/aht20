@@ -2,7 +2,7 @@
 
 [![Hex.pm](https://img.shields.io/hexpm/v/aht20.svg)](https://hex.pm/packages/aht20)
 [![API docs](https://img.shields.io/hexpm/v/aht20.svg?label=docs)](https://hexdocs.pm/aht20)
-![CI](https://github.com/mnishiguchi/AHT20/workflows/CI/badge.svg)
+[![CI](https://github.com/mnishiguchi/AHT20/workflows/CI/badge.svg)](https://github.com/mnishiguchi/AHT20/actions)
 
 Use [AHT20](http://www.aosong.com/en/products-32.html) temperature & humidity sensor in Elixir.
 
