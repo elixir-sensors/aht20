@@ -44,25 +44,18 @@ defmodule AHT20.Sensor do
   """
   @spec start(config) :: {:ok, t} | {:error, any}
   def start(config \\ %{}) do
-    i2c_bus = config[:i2c_bus] || @default_i2c_bus
-    i2c_address = config[:i2c_address] || @default_i2c_address
-
-    {:ok, i2c_ref} = I2CDevice.open(i2c_bus)
-
-    aht20 =
-      __struct__(
-        i2c_bus: i2c_bus,
-        i2c_ref: i2c_ref,
-        i2c_address: i2c_address
-      )
-
-    Process.sleep(40)
-    :ok = reset(aht20)
-    :ok = init(aht20)
-
-    {:ok, aht20}
-  rescue
-    e -> {:error, e}
+    with i2c_bus <- config[:i2c_bus] || @default_i2c_bus,
+         i2c_address <- config[:i2c_address] || @default_i2c_address,
+         {:ok, i2c_ref} <- I2CDevice.open(i2c_bus),
+         sensor <- __struct__(i2c_bus: i2c_bus, i2c_ref: i2c_ref, i2c_address: i2c_address),
+         :ok <- Process.sleep(40),
+         :ok <- reset(sensor),
+         :ok <- init(sensor) do
+      {:ok, sensor}
+    else
+      {:error, reason} -> {:error, reason}
+      unexpected -> {:error, unexpected}
+    end
   end
 
   @doc """
@@ -72,11 +65,12 @@ defmodule AHT20.Sensor do
   """
   @spec reset(t) :: :ok | {:error, any}
   def reset(%{i2c_ref: i2c_ref, i2c_address: i2c_address}) do
-    :ok = I2CDevice.write(i2c_ref, i2c_address, [@aht20_cmd_soft_reset])
-    Process.sleep(20)
-    :ok
-  rescue
-    e -> {:error, e}
+    with :ok <- I2CDevice.write(i2c_ref, i2c_address, [@aht20_cmd_soft_reset]),
+         :ok <- Process.sleep(20) do
+      :ok
+    else
+      {:error, reason} -> {:error, reason}
+    end
   end
 
   # Initialize the sensor system.
@@ -91,11 +85,13 @@ defmodule AHT20.Sensor do
   """
   @spec read_data(t) :: {:ok, <<_::56>>} | {:error, any}
   def read_data(%{i2c_ref: i2c_ref, i2c_address: i2c_address}) do
-    :ok = I2CDevice.write(i2c_ref, i2c_address, [@aht20_cmd_trigger_measurement, 0x33, 0x00])
-    Process.sleep(75)
-    I2CDevice.read(i2c_ref, i2c_address, 7)
-  rescue
-    e -> {:error, e}
+    with :ok <- I2CDevice.write(i2c_ref, i2c_address, [@aht20_cmd_trigger_measurement, 0x33, 0x00]),
+         :ok <- Process.sleep(75),
+         {:ok, data} <- I2CDevice.read(i2c_ref, i2c_address, 7) do
+      {:ok, data}
+    else
+      {:error, reason} -> {:error, reason}
+    end
   end
 
   @doc """
