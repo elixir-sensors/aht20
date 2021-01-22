@@ -1,11 +1,12 @@
 defmodule AHT20.Sensor do
   @moduledoc """
   Abstracts the basic operations of the temperature and humidity sensor AHT20.
-  For the ADT20 specifications, please refer to the [AHT20 data sheet](https://cdn.sparkfun.com/assets/d/2/b/e/d/AHT20.pdf).
+  For the AHT20 specifications, please refer to the [AHT20 data sheet](https://cdn.sparkfun.com/assets/d/2/b/e/d/AHT20.pdf).
   """
 
   require Logger
   use Bitwise, only_operators: true
+  alias AHT20.I2C.Device, as: I2CDevice
 
   @default_i2c_bus "i2c-1"
   @default_i2c_address 0x38
@@ -15,8 +16,8 @@ defmodule AHT20.Sensor do
   @aht20_cmd_soft_reset 0xBA
   @aht20_cmd_read_state 0x71
 
-  @type i2c_bus :: Circuit.I2C.bus()
-  @type i2c_address :: Circuit.I2C.address()
+  @type i2c_bus :: AHT20.I2C.bus_name()
+  @type i2c_address :: AHT20.I2C.address()
 
   @typedoc """
   The configuration options.
@@ -46,7 +47,7 @@ defmodule AHT20.Sensor do
     i2c_bus = config[:i2c_bus] || @default_i2c_bus
     i2c_address = config[:i2c_address] || @default_i2c_address
 
-    {:ok, i2c_ref} = Circuits.I2C.open(i2c_bus)
+    {:ok, i2c_ref} = I2CDevice.open(i2c_bus)
 
     aht20 =
       __struct__(
@@ -71,7 +72,7 @@ defmodule AHT20.Sensor do
   """
   @spec reset(t) :: :ok | {:error, any}
   def reset(%{i2c_ref: i2c_ref, i2c_address: i2c_address}) do
-    :ok = Circuits.I2C.write(i2c_ref, i2c_address, [@aht20_cmd_soft_reset])
+    :ok = I2CDevice.write(i2c_ref, i2c_address, [@aht20_cmd_soft_reset])
     Process.sleep(20)
     :ok
   rescue
@@ -82,7 +83,7 @@ defmodule AHT20.Sensor do
   # For more info. please refer to the data sheet (section 5.4).
   @spec init(t) :: :ok | :no_return
   defp init(%{i2c_ref: i2c_ref, i2c_address: i2c_address}) do
-    Circuits.I2C.write(i2c_ref, i2c_address, [@aht20_cmd_initialize, 0x08, 0x00])
+    I2CDevice.write(i2c_ref, i2c_address, [@aht20_cmd_initialize, 0x08, 0x00])
   end
 
   @doc """
@@ -90,9 +91,9 @@ defmodule AHT20.Sensor do
   """
   @spec read_data(t) :: {:ok, <<_::56>>} | {:error, any}
   def read_data(%{i2c_ref: i2c_ref, i2c_address: i2c_address}) do
-    :ok = Circuits.I2C.write(i2c_ref, i2c_address, [@aht20_cmd_trigger_measurement, 0x33, 0x00])
+    :ok = I2CDevice.write(i2c_ref, i2c_address, [@aht20_cmd_trigger_measurement, 0x33, 0x00])
     Process.sleep(75)
-    Circuits.I2C.read(i2c_ref, i2c_address, 7)
+    I2CDevice.read(i2c_ref, i2c_address, 7)
   rescue
     e -> {:error, e}
   end
@@ -103,6 +104,6 @@ defmodule AHT20.Sensor do
   """
   @spec read_state(t) :: {:ok, <<_::8>>} | {:error, any}
   def read_state(%{i2c_ref: i2c_ref, i2c_address: i2c_address}) do
-    Circuits.I2C.write_read(i2c_ref, i2c_address, [@aht20_cmd_read_state], 1)
+    I2CDevice.write_read(i2c_ref, i2c_address, [@aht20_cmd_read_state], 1)
   end
 end

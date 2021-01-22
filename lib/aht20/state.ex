@@ -14,7 +14,7 @@ defmodule AHT20.State do
   @doc """
   Parses the sensor state byte into a human-readable struct.
 
-      iex> AHT20.State.from_byte(0b0001_1100)
+      iex> AHT20.State.from_byte(0b00011100)
       %AHT20.State{busy: false, calibrated: true, mode: :nor}
   """
   @spec from_byte(byte) :: t
