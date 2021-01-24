@@ -54,3 +54,17 @@ defmodule AHT20.I2C.Device do
     Application.get_env(:aht20, :i2c_module, Circuits.I2C)
   end
 end
+
+defmodule AHT20.I2C.Stub do
+  @moduledoc false
+
+  @behaviour AHT20.I2C.Behaviour
+
+  def open(_bus_name), do: {:ok, Kernel.make_ref()}
+
+  def write(_reference, _address, _data, []), do: :ok
+
+  def read(_reference, _address, _bytes_to_read, []), do: {:ok, "stub"}
+
+  def write_read(_reference, _address, _data, _bytes_to_read, []), do: {:ok, "stub"}
+end

@@ -8,10 +8,7 @@ defmodule AHT20.SensorTest do
   setup :verify_on_exit!
 
   setup do
-    AHT20.MockI2C
-    |> Mox.stub(:write, fn _ref, _address, _data, [] -> :ok end)
-    |> Mox.stub(:open, fn _i2c_bus -> {:ok, Kernel.make_ref()} end)
-
+    Mox.stub_with(AHT20.MockI2C, AHT20.I2C.Stub)
     :ok
   end
 

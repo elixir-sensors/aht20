@@ -18,7 +18,7 @@ defmodule AHT20.SensorWorker do
 
   @impl GenServer
   def init(config) do
-    Logger.info("Starting #{__MODULE__}")
+    Logger.info("Starting #{__MODULE__} #{inspect(config)}")
     {:ok, _sensor} = AHT20.Sensor.start(config)
   end
 
