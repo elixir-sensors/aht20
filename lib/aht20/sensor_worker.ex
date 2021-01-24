@@ -9,12 +9,12 @@ defmodule AHT20.SensorWorker do
 
   @spec start_link(AHT20.Sensor.config()) :: {:ok, pid} | {:error, any}
   def start_link(config) do
-    GenServer.start_link(__MODULE__, config, name: __MODULE__)
+    GenServer.start_link(__MODULE__, config)
   end
 
-  def read_data, do: GenServer.call(__MODULE__, :read_data)
+  def read_data(pid), do: GenServer.call(pid, :read_data)
 
-  def read_state, do: GenServer.call(__MODULE__, :read_state)
+  def read_state(pid), do: GenServer.call(pid, :read_state)
 
   @impl GenServer
   def init(config) do

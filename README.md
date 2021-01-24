@@ -19,8 +19,8 @@ Devices on I2C bus "i2c-1":
 1 devices detected on 1 I2C buses
 
 # Connect to the sensor.
-iex> {:ok, aht20} = AHT20.start(bus_name: "i2c-1", bus_address: 0x38)
-{:ok, AHT20.Sensor{}}
+iex> {:ok, aht20} = AHT20.start_link(bus_name: "i2c-1", bus_address: 0x38)
+{:ok, #PID<0.1407.0>}
 
 # Read the humidity and temperature from the sensor.
 iex> AHT20.read_data(aht20)
@@ -35,4 +35,4 @@ iex> AHT20.read_data(aht20)
 ```
 
 Depending on your hardware configuration, you may need to modify the call to
-`AHT20.start/1`. See `t:AHT20.Sensor.config/0` for parameters.
+`AHT20.start_link/1`. See `t:AHT20.Sensor.config/0` for parameters.
