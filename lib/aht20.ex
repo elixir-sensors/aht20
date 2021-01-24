@@ -1,20 +1,18 @@
 defmodule AHT20 do
   @moduledoc false
 
-  @spec start(list | map) :: {:ok, AHT20.Sensor.t()} | {:error, any}
-  def start(config) do
-    AHT20.Sensor.start(Enum.into(config, %{}))
+  @spec start_link(AHT20.Sensor.config()) :: {:ok, pid} | {:error, any}
+  def start_link(config) do
+    AHT20.SensorWorker.start_link(config)
   end
 
-  @spec read_data(AHT20.Sensor.t()) :: {:ok, AHT20.Measurement.t()} | {:error, any}
-  def read_data(sensor) do
-    {:ok, sensor_output} = AHT20.Sensor.read_data(sensor)
-    {:ok, AHT20.Measurement.from_sensor_output(sensor_output)}
+  @spec read_data() :: {:ok, AHT20.Measurement.t()} | {:error, any}
+  def read_data() do
+    AHT20.SensorWorker.read_data()
   end
 
-  @spec read_state(AHT20.Sensor.t()) :: {:ok, AHT20.State.t()} | {:error, any}
-  def read_state(sensor) do
-    {:ok, <<sensor_state_byte>>} = AHT20.Sensor.read_state(sensor)
-    {:ok, AHT20.State.from_byte(sensor_state_byte)}
+  @spec read_state() :: {:ok, AHT20.State.t()} | {:error, any}
+  def read_state() do
+    AHT20.SensorWorker.read_state()
   end
 end

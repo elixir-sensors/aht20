@@ -7,26 +7,26 @@ defmodule AHT20.SensorTest do
   # Make sure mocks are verified when the test exits
   setup :verify_on_exit!
 
-  test "start" do
+  setup do
     AHT20.MockI2C
-    |> expect(:write, 2, fn _ref, _address, _data, [] -> :ok end)
-    |> expect(:open, 1, fn _i2c_bus -> {:ok, Kernel.make_ref()} end)
+    |> Mox.stub(:write, fn _ref, _address, _data, [] -> :ok end)
+    |> Mox.stub(:open, fn _i2c_bus -> {:ok, Kernel.make_ref()} end)
 
+    :ok
+  end
+
+  test "start" do
     assert {:ok, %AHT20.Sensor{i2c_address: 0x38, i2c_bus: "i2c-1", i2c_ref: _}} = AHT20.Sensor.start()
   end
 
   test "reset" do
-    AHT20.MockI2C
-    |> expect(:write, 1, fn _ref, _address, _data, [] -> :ok end)
-
     sensor = %AHT20.Sensor{i2c_address: 0x38, i2c_bus: "i2c-1", i2c_ref: make_ref()}
     assert :ok = AHT20.Sensor.reset(sensor)
   end
 
   test "read_data" do
     AHT20.MockI2C
-    |> expect(:write, 1, fn _ref, _address, _data, [] -> :ok end)
-    |> expect(:read, 1, fn _ref, _address, _data, [] -> {:ok, <<28, 38, 154, 118, 66, 231, 118>>} end)
+    |> Mox.expect(:read, 1, fn _ref, _address, _data, [] -> {:ok, <<28, 38, 154, 118, 66, 231, 118>>} end)
 
     sensor = %AHT20.Sensor{i2c_address: 0x38, i2c_bus: "i2c-1", i2c_ref: make_ref()}
     assert {:ok, <<28, 38, 154, 118, 66, 231, 118>>} = AHT20.Sensor.read_data(sensor)
@@ -34,7 +34,7 @@ defmodule AHT20.SensorTest do
 
   test "read_state" do
     AHT20.MockI2C
-    |> expect(:write_read, 1, fn _ref, _address, _data, _bytes_to_read, [] -> {:ok, <<0b00011100>>} end)
+    |> Mox.expect(:write_read, 1, fn _ref, _address, _data, _bytes_to_read, [] -> {:ok, <<0b00011100>>} end)
 
     sensor = %AHT20.Sensor{i2c_address: 0x38, i2c_bus: "i2c-1", i2c_ref: make_ref()}
     assert {:ok, <<28>>} = AHT20.Sensor.read_state(sensor)

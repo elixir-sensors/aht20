@@ -28,8 +28,9 @@ defmodule AHT20.Calc do
       82.88008880615234
   """
   @spec fahrenheit_from_raw_temperature(integer) :: float
-  def fahrenheit_from_raw_temperature(raw_temperature),
-    do: celsius_from_raw_temperature(raw_temperature) * 9.0 / 5.0 + 32.0
+  def fahrenheit_from_raw_temperature(raw_temperature) do
+    celsius_from_raw_temperature(raw_temperature) * 9.0 / 5.0 + 32.0
+  end
 
   @doc """
   Obtains the humidity value from the sensor output.

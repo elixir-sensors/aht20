@@ -4,25 +4,31 @@ defmodule AHT20Test do
   # https://hexdocs.pm/mox/Mox.html
   import Mox
 
+  # Any process can consume mocks and stubs defined in your tests.
+  setup :set_mox_from_context
+
   # Make sure mocks are verified when the test exits
   setup :verify_on_exit!
 
-  test "start" do
+  setup do
     AHT20.MockI2C
-    |> expect(:write, 2, fn _ref, _address, _data, [] -> :ok end)
-    |> expect(:open, 1, fn _i2c_bus -> {:ok, Kernel.make_ref()} end)
+    |> Mox.stub(:write, fn _ref, _address, _data, [] -> :ok end)
+    |> Mox.stub(:open, fn _i2c_bus -> {:ok, Kernel.make_ref()} end)
 
+    :ok
+  end
+
+  test "start_link" do
     config = [i2c_bus: "i2c-1", i2c_address: 0x38]
-    assert {:ok, %AHT20.Sensor{i2c_address: 0x38, i2c_bus: "i2c-1", i2c_ref: _}} = AHT20.start(config)
+    assert {:ok, _} = AHT20.start_link(config)
   end
 
   test "read_data" do
     AHT20.MockI2C
-    |> expect(:write, 1, fn _ref, _address, _data, [] -> :ok end)
-    |> expect(:read, 1, fn _ref, _address, _data, [] -> {:ok, <<28, 38, 154, 118, 66, 231, 118>>} end)
+    |> Mox.expect(:read, 1, fn _ref, _address, _data, [] -> {:ok, <<28, 38, 154, 118, 66, 231, 118>>} end)
 
-    sensor = %AHT20.Sensor{i2c_address: 0x38, i2c_bus: "i2c-1", i2c_ref: make_ref()}
-    assert {:ok, data} = AHT20.read_data(sensor)
+    assert {:ok, _pid} = AHT20.start_link(i2c_bus: "i2c-1", i2c_address: 0x38)
+    assert {:ok, data} = AHT20.read_data()
 
     assert data == %AHT20.Measurement{
              raw_humidity: 158_119,
@@ -35,10 +41,10 @@ defmodule AHT20Test do
 
   test "read_state" do
     AHT20.MockI2C
-    |> expect(:write_read, 1, fn _ref, _address, _data, _bytes_to_read, [] -> {:ok, <<0b00011100>>} end)
+    |> Mox.expect(:write_read, 1, fn _ref, _address, _data, _bytes_to_read, [] -> {:ok, <<0b00011100>>} end)
 
-    sensor = %AHT20.Sensor{i2c_address: 0x38, i2c_bus: "i2c-1", i2c_ref: make_ref()}
-    assert {:ok, state} = AHT20.read_state(sensor)
+    AHT20.start_link(i2c_bus: "i2c-1", i2c_address: 0x38)
+    assert {:ok, state} = AHT20.read_state()
     assert state == %AHT20.State{busy: false, calibrated: true, mode: :nor}
   end
 end
