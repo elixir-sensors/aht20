@@ -40,8 +40,7 @@ defmodule AHT20.Calc do
   """
   @spec raw_humidity_from_sensor_output(<<_::56>>) :: integer()
   def raw_humidity_from_sensor_output(sensor_output) do
-    <<_state, hum1, hum2, hum3::4, _temp1::4, _temp2, _temp3, _crc>> = sensor_output
-    <<humidity::20>> = <<hum1, hum2, hum3::4>>
+    <<_state, humidity::20, _temperature::20, _crc>> = sensor_output
     humidity
   end
 
@@ -53,8 +52,7 @@ defmodule AHT20.Calc do
   """
   @spec raw_temperature_from_sensor_output(<<_::56>>) :: integer()
   def raw_temperature_from_sensor_output(sensor_output) do
-    <<_state, _hum1, _hum2, _hum3::4, temp1::4, temp2, temp3, _crc>> = sensor_output
-    <<temperature::20>> = <<temp1::4, temp2, temp3>>
+    <<_state, _humidity::20, temperature::20, _crc>> = sensor_output
     temperature
   end
 end
