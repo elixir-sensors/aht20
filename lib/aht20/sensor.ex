@@ -6,34 +6,32 @@ defmodule AHT20.Sensor do
 
   require Logger
   use Bitwise, only_operators: true
-  alias AHT20.I2C.Device, as: I2CDevice
 
-  @default_i2c_bus "i2c-1"
-  @default_i2c_address 0x38
+  @default_bus_name "i2c-1"
+  @default_bus_address 0x38
 
   @aht20_cmd_initialize 0xBE
   @aht20_cmd_trigger_measurement 0xAC
   @aht20_cmd_soft_reset 0xBA
   @aht20_cmd_read_state 0x71
 
-  @type i2c_bus :: AHT20.I2C.Behaviour.bus_name()
-  @type i2c_address :: AHT20.I2C.Behaviour.address()
+  @type bus_name :: AHT20.Transport.bus_name()
+  @type bus_address :: AHT20.Transport.address()
 
   @typedoc """
   The configuration options.
   """
 
-  @type config :: [{:i2c_bus, i2c_bus} | {:i2c_address, i2c_address}]
+  @type config :: [{:bus_name, bus_name} | {:bus_address, bus_address}]
 
-  defstruct [:i2c_bus, :i2c_ref, :i2c_address]
+  defstruct [:ref, :bus_address]
 
   @typedoc """
   Represents the connection to the sensor.
   """
   @type t :: %__MODULE__{
-          i2c_bus: i2c_bus,
-          i2c_ref: reference,
-          i2c_address: i2c_address
+          bus_address: bus_address,
+          ref: reference
         }
 
   @doc """
@@ -42,10 +40,10 @@ defmodule AHT20.Sensor do
   """
   @spec start(config) :: {:ok, t} | {:error, any}
   def start(config \\ []) do
-    with i2c_bus <- config[:i2c_bus] || @default_i2c_bus,
-         i2c_address <- config[:i2c_address] || @default_i2c_address,
-         {:ok, i2c_ref} <- I2CDevice.open(i2c_bus),
-         sensor <- __struct__(i2c_bus: i2c_bus, i2c_ref: i2c_ref, i2c_address: i2c_address),
+    with bus_name <- config[:bus_name] || @default_bus_name,
+         bus_address <- config[:bus_address] || @default_bus_address,
+         {:ok, ref} <- AHT20.I2CDevice.open(bus_name),
+         sensor <- __struct__(ref: ref, bus_address: bus_address),
          :ok <- Process.sleep(40),
          :ok <- reset(sensor),
          :ok <- initialize(sensor) do
@@ -62,8 +60,8 @@ defmodule AHT20.Sensor do
   For more info. please refer to the data sheet (section 5.5).
   """
   @spec reset(t) :: :ok | {:error, any}
-  def reset(%{i2c_ref: i2c_ref, i2c_address: i2c_address}) do
-    with :ok <- I2CDevice.write(i2c_ref, i2c_address, [@aht20_cmd_soft_reset]),
+  def reset(%{ref: ref, bus_address: bus_address}) do
+    with :ok <- AHT20.I2CDevice.write(ref, bus_address, [@aht20_cmd_soft_reset]),
          :ok <- Process.sleep(20) do
       :ok
     else
@@ -74,19 +72,18 @@ defmodule AHT20.Sensor do
   # Initialize the sensor system.
   # For more info. please refer to the data sheet (section 5.4).
   @spec initialize(t) :: :ok | :no_return
-  defp initialize(%{i2c_ref: i2c_ref, i2c_address: i2c_address}) do
-    I2CDevice.write(i2c_ref, i2c_address, [@aht20_cmd_initialize, 0x08, 0x00])
+  defp initialize(%{ref: ref, bus_address: bus_address}) do
+    AHT20.I2CDevice.write(ref, bus_address, [@aht20_cmd_initialize, 0x08, 0x00])
   end
 
   @doc """
   Triggers the sensor to read temperature and humidity.
   """
   @spec read_data(t) :: {:ok, <<_::56>>} | {:error, any}
-  def read_data(%{i2c_ref: i2c_ref, i2c_address: i2c_address}) do
-    with :ok <- I2CDevice.write(i2c_ref, i2c_address, [@aht20_cmd_trigger_measurement, 0x33, 0x00]),
-         :ok <- Process.sleep(75),
-         {:ok, data} <- I2CDevice.read(i2c_ref, i2c_address, 7) do
-      {:ok, data}
+  def read_data(%{ref: ref, bus_address: bus_address}) do
+    with :ok <- AHT20.I2CDevice.write(ref, bus_address, [@aht20_cmd_trigger_measurement, 0x33, 0x00]),
+         :ok <- Process.sleep(75) do
+      AHT20.I2CDevice.read(ref, bus_address, 7)
     else
       {:error, reason} -> {:error, reason}
     end
@@ -97,7 +94,7 @@ defmodule AHT20.Sensor do
   For more info. please refer to the data sheet (section 5.3).
   """
   @spec read_state(t) :: {:ok, <<_::8>>} | {:error, any}
-  def read_state(%{i2c_ref: i2c_ref, i2c_address: i2c_address}) do
-    I2CDevice.write_read(i2c_ref, i2c_address, [@aht20_cmd_read_state], 1)
+  def read_state(%{ref: ref, bus_address: bus_address}) do
+    AHT20.I2CDevice.write_read(ref, bus_address, [@aht20_cmd_read_state], 1)
   end
 end

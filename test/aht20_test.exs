@@ -11,21 +11,21 @@ defmodule AHT20Test do
   setup :verify_on_exit!
 
   setup do
-    Mox.stub_with(AHT20.MockI2C, AHT20.I2C.Stub)
+    Mox.stub_with(AHT20.MockI2C, AHT20.I2CDevice.Stub)
     :ok
   end
 
   describe "without worker" do
     test "start" do
-      config = [i2c_bus: "i2c-1", i2c_address: 0x38]
+      config = [bus_name: "i2c-1", bus_address: 0x38]
       assert {:ok, _} = AHT20.start(config)
     end
 
     test "read_data" do
       AHT20.MockI2C
-      |> Mox.expect(:read, 1, fn _ref, _address, _data, [] -> {:ok, <<28, 38, 154, 118, 66, 231, 118>>} end)
+      |> Mox.expect(:read, 1, fn _ref, _address, _data -> {:ok, <<28, 38, 154, 118, 66, 231, 118>>} end)
 
-      sensor = %AHT20.Sensor{i2c_address: 0x38, i2c_bus: "i2c-1", i2c_ref: make_ref()}
+      sensor = %AHT20.Sensor{bus_address: 0x38, ref: make_ref()}
       assert {:ok, data} = AHT20.read_data(sensor)
 
       assert data == %AHT20.Measurement{
@@ -39,9 +39,9 @@ defmodule AHT20Test do
 
     test "read_state" do
       AHT20.MockI2C
-      |> Mox.expect(:write_read, 1, fn _ref, _address, _data, _bytes_to_read, [] -> {:ok, <<0b00011100>>} end)
+      |> Mox.expect(:write_read, 1, fn _ref, _address, _data, _bytes_to_read -> {:ok, <<0b00011100>>} end)
 
-      sensor = %AHT20.Sensor{i2c_address: 0x38, i2c_bus: "i2c-1", i2c_ref: make_ref()}
+      sensor = %AHT20.Sensor{bus_address: 0x38, ref: make_ref()}
       assert {:ok, state} = AHT20.read_state(sensor)
       assert state == %AHT20.State{busy: false, calibrated: true, mode: :nor}
     end
@@ -49,15 +49,15 @@ defmodule AHT20Test do
 
   describe "with worker" do
     test "start_link" do
-      config = [i2c_bus: "i2c-1", i2c_address: 0x38]
+      config = [bus_name: "i2c-1", bus_address: 0x38]
       assert {:ok, _} = AHT20.start_link(config)
     end
 
     test "read_data" do
       AHT20.MockI2C
-      |> Mox.expect(:read, 1, fn _ref, _address, _data, [] -> {:ok, <<28, 38, 154, 118, 66, 231, 118>>} end)
+      |> Mox.expect(:read, 1, fn _ref, _address, _data -> {:ok, <<28, 38, 154, 118, 66, 231, 118>>} end)
 
-      assert {:ok, pid} = AHT20.start_link(i2c_bus: "i2c-1", i2c_address: 0x38)
+      assert {:ok, pid} = AHT20.start_link(bus_name: "i2c-1", bus_address: 0x38)
       assert {:ok, data} = AHT20.read_data(pid)
 
       assert data == %AHT20.Measurement{
@@ -71,9 +71,9 @@ defmodule AHT20Test do
 
     test "read_state" do
       AHT20.MockI2C
-      |> Mox.expect(:write_read, 1, fn _ref, _address, _data, _bytes_to_read, [] -> {:ok, <<0b00011100>>} end)
+      |> Mox.expect(:write_read, 1, fn _ref, _address, _data, _bytes_to_read -> {:ok, <<0b00011100>>} end)
 
-      assert {:ok, pid} = AHT20.start_link(i2c_bus: "i2c-1", i2c_address: 0x38)
+      assert {:ok, pid} = AHT20.start_link(bus_name: "i2c-1", bus_address: 0x38)
       assert {:ok, state} = AHT20.read_state(pid)
       assert state == %AHT20.State{busy: false, calibrated: true, mode: :nor}
     end
