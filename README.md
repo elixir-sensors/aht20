@@ -6,6 +6,8 @@
 
 Use [AHT20](http://www.aosong.com/en/products-32.html) temperature & humidity sensor in Elixir.
 
+[![](https://user-images.githubusercontent.com/7563926/107892310-44c78700-6ef2-11eb-996c-0a7580d0ed1d.jpg)](https://www.google.com/search?q=aht20+sensor&tbm=isch)
+
 ## Usage
 
 Here's an example use:
