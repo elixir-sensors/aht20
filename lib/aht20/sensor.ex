@@ -4,7 +4,6 @@ defmodule AHT20.Sensor do
   For the AHT20 specifications, please refer to the [AHT20 data sheet](https://cdn.sparkfun.com/assets/d/2/b/e/d/AHT20.pdf).
   """
 
-  require Logger
   use Bitwise, only_operators: true
 
   @default_bus_name "i2c-1"

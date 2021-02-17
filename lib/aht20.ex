@@ -5,8 +5,6 @@ defmodule AHT20 do
 
   use GenServer
 
-  require Logger
-
   @spec start_link(AHT20.Sensor.config()) :: GenServer.on_start()
   def start_link(config), do: GenServer.start_link(__MODULE__, config)
 
@@ -18,7 +16,6 @@ defmodule AHT20 do
 
   @impl true
   def init(config) do
-    Logger.info("Starting #{__MODULE__} #{inspect(config)}")
     {:ok, _sensor} = AHT20.Sensor.start(config)
   end
 
@@ -44,10 +41,5 @@ defmodule AHT20 do
       {:error, reason} ->
         {:reply, {:error, reason}, sensor}
     end
-  end
-
-  @impl true
-  def terminate(reason, _state) do
-    Logger.error(String.slice("Stopping #{__MODULE__} #{reason}", 0..79))
   end
 end
