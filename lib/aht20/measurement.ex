@@ -3,7 +3,7 @@ defmodule AHT20.Measurement do
   One sensor measurement report.
   """
 
-  defstruct [:temperature_c, :temperature_f, :humidity_rh, :raw_humidity, :raw_temperature]
+  defstruct [:temperature_c, :temperature_f, :humidity_rh]
 
   @type t :: %__MODULE__{
           temperature_c: number,
