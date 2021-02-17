@@ -34,8 +34,8 @@ defmodule AHT20 do
   @impl true
   def handle_call(:read_state, _from, sensor) do
     case AHT20.Sensor.read_state(sensor) do
-      {:ok, <<sensor_state_byte>>} ->
-        sensor_state = AHT20.State.from_byte(sensor_state_byte)
+      {:ok, sensor_output} ->
+        sensor_state = AHT20.State.from_sensor_output(sensor_output)
         {:reply, {:ok, sensor_state}, sensor}
 
       {:error, reason} ->
