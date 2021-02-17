@@ -1,40 +1,53 @@
 defmodule AHT20 do
   @moduledoc """
-  A collection of convenient functions to use this library.
+  Wraps a sensor, holding a connection.
   """
 
-  @spec start(AHT20.Sensor.config()) :: {:ok, AHT20.Sensor.t()} | {:error, any}
-  def start(config) do
-    AHT20.Sensor.start(config)
-  end
+  use GenServer
 
-  @spec start_link(AHT20.Sensor.config()) :: {:ok, pid} | {:error, any}
-  def start_link(config) do
-    AHT20.SensorWorker.start_link(config)
-  end
+  require Logger
 
-  @spec read(pid) :: {:ok, AHT20.Measurement.t()} | {:error, any}
+  @spec start_link(AHT20.Sensor.config()) :: GenServer.on_start()
+  def start_link(config), do: GenServer.start_link(__MODULE__, config)
+
   def read(pid), do: read_data(pid)
 
-  @spec read_data(pid) :: {:ok, AHT20.Measurement.t()} | {:error, any}
-  def read_data(pid) when is_pid(pid) do
-    AHT20.SensorWorker.read_data(pid)
+  def read_data(pid), do: GenServer.call(pid, :read_data)
+
+  def read_state(pid), do: GenServer.call(pid, :read_state)
+
+  @impl true
+  def init(config) do
+    Logger.info("Starting #{__MODULE__} #{inspect(config)}")
+    {:ok, _sensor} = AHT20.Sensor.start(config)
   end
 
-  @spec read_data(AHT20.Sensor.t()) :: {:ok, AHT20.Measurement.t()} | {:error, any}
-  def read_data(%AHT20.Sensor{} = sensor) when is_struct(sensor) do
-    {:ok, sensor_output} = AHT20.Sensor.read_data(sensor)
-    {:ok, AHT20.Measurement.from_sensor_output(sensor_output)}
+  @impl true
+  def handle_call(:read_data, _from, sensor) do
+    case AHT20.Sensor.read_data(sensor) do
+      {:ok, sensor_output} ->
+        measurement = AHT20.Measurement.from_sensor_output(sensor_output)
+        {:reply, {:ok, measurement}, sensor}
+
+      {:error, reason} ->
+        {:reply, {:error, reason}, sensor}
+    end
   end
 
-  @spec read_state(pid) :: {:ok, AHT20.State.t()} | {:error, any}
-  def read_state(pid) when is_pid(pid) do
-    AHT20.SensorWorker.read_state(pid)
+  @impl true
+  def handle_call(:read_state, _from, sensor) do
+    case AHT20.Sensor.read_state(sensor) do
+      {:ok, <<sensor_state_byte>>} ->
+        sensor_state = AHT20.State.from_byte(sensor_state_byte)
+        {:reply, {:ok, sensor_state}, sensor}
+
+      {:error, reason} ->
+        {:reply, {:error, reason}, sensor}
+    end
   end
 
-  @spec read_state(AHT20.Sensor.t()) :: {:ok, AHT20.State.t()} | {:error, any}
-  def read_state(%AHT20.Sensor{} = sensor) when is_struct(sensor) do
-    {:ok, <<sensor_state_byte>>} = AHT20.Sensor.read_state(sensor)
-    {:ok, AHT20.State.from_byte(sensor_state_byte)}
+  @impl true
+  def terminate(reason, _state) do
+    Logger.error(String.slice("Stopping #{__MODULE__} #{reason}", 0..79))
   end
 end
