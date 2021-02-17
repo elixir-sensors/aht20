@@ -13,6 +13,9 @@ defmodule AHT20 do
     AHT20.SensorWorker.start_link(config)
   end
 
+  @spec read(pid) :: {:ok, AHT20.Measurement.t()} | {:error, any}
+  def read(pid), do: read_data(pid)
+
   @spec read_data(pid) :: {:ok, AHT20.Measurement.t()} | {:error, any}
   def read_data(pid) when is_pid(pid) do
     AHT20.SensorWorker.read_data(pid)
