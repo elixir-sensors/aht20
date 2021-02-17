@@ -28,9 +28,7 @@ iex> {:ok, aht20} = AHT20.start_link(bus_name: "i2c-1", bus_address: 0x38)
 iex> AHT20.read_data(aht20)
 {:ok,
  %AHT20.Measurement{
-   raw_humidity: 158_119,
-   raw_temperature: 410_343,
-   relative_humidity: 15.079402923583984,
+   humidity_rh: 15.079402923583984,
    temperature_c: 28.26671600341797,
    temperature_f: 82.88008880615234
  }}

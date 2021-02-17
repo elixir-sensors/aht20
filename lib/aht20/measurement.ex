@@ -1,18 +1,14 @@
 defmodule AHT20.Measurement do
   @moduledoc """
   One sensor measurement report.
-  Only the raw temperature and raw humidity values are computed directly from the sensor.
-  All other values are derived.
   """
 
-  defstruct [:temperature_c, :temperature_f, :relative_humidity, :raw_humidity, :raw_temperature]
+  defstruct [:temperature_c, :temperature_f, :humidity_rh, :raw_humidity, :raw_temperature]
 
   @type t :: %__MODULE__{
           temperature_c: number,
           temperature_f: number,
-          relative_humidity: number,
-          raw_humidity: number,
-          raw_temperature: number
+          humidity_rh: number
         }
 
   @doc """
@@ -20,23 +16,16 @@ defmodule AHT20.Measurement do
 
       iex> AHT20.Measurement.from_sensor_output(<<28, 38, 154, 118, 66, 231, 118>>)
       %AHT20.Measurement{
-        raw_humidity: 158119,
-        raw_temperature: 410343,
-        relative_humidity: 15.079402923583984,
+        humidity_rh: 15.079402923583984,
         temperature_c: 28.26671600341797,
         temperature_f: 82.88008880615234
       }
   """
-  def from_sensor_output(sensor_output) do
-    raw_humidity = AHT20.Calc.raw_humidity_from_sensor_output(sensor_output)
-    raw_temperature = AHT20.Calc.raw_temperature_from_sensor_output(sensor_output)
-
+  def from_sensor_output(<<_state, raw_humidity::20, raw_temperature::20, _crc>>) do
     __struct__(
-      relative_humidity: AHT20.Calc.relative_humidity(raw_humidity),
-      temperature_c: AHT20.Calc.celsius_from_raw_temperature(raw_temperature),
-      temperature_f: AHT20.Calc.fahrenheit_from_raw_temperature(raw_temperature),
-      raw_humidity: raw_humidity,
-      raw_temperature: raw_temperature
+      humidity_rh: AHT20.Calc.humidity_rh_from_raw(raw_humidity),
+      temperature_c: AHT20.Calc.temperature_c_from_raw(raw_temperature),
+      temperature_f: AHT20.Calc.temperature_f_from_raw(raw_temperature)
     )
   end
 end
