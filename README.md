@@ -14,7 +14,7 @@ Here's an example use:
 
 ```elixir
 # Detect I2C devices.
-iex> Circuits.I2C.detect_devices()
+iex> AHT20.detect_devices()
 Devices on I2C bus "i2c-1":
  * 56  (0x38)
 
@@ -25,7 +25,7 @@ iex> {:ok, aht20} = AHT20.start_link(bus_name: "i2c-1", bus_address: 0x38)
 {:ok, #PID<0.1407.0>}
 
 # Read the humidity and temperature from the sensor.
-iex> AHT20.read(aht20)
+iex> AHT20.measure(aht20)
 {:ok,
  %AHT20.Measurement{
    humidity_rh: 15.079402923583984,
