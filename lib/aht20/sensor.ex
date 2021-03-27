@@ -1,8 +1,5 @@
 defmodule AHT20.Sensor do
-  @moduledoc """
-  Abstracts the basic operations of the temperature and humidity sensor AHT20.
-  For the AHT20 specifications, please refer to the [AHT20 data sheet](https://cdn.sparkfun.com/assets/d/2/b/e/d/AHT20.pdf).
-  """
+  @moduledoc false
 
   use Bitwise, only_operators: true
 

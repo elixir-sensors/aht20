@@ -1,7 +1,5 @@
 defmodule AHT20.State do
-  @moduledoc """
-  Represents the sensor state.
-  """
+  @moduledoc false
 
   defstruct [:busy, :mode, :calibrated]
 

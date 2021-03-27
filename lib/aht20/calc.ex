@@ -1,7 +1,5 @@
 defmodule AHT20.Calc do
-  @moduledoc """
-  A collection of calculation functions.
-  """
+  @moduledoc false
 
   @doc """
   Calculates the relative humidity in percent.

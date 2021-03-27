@@ -1,7 +1,5 @@
 defmodule AHT20.Transport do
-  @moduledoc """
-  Defines a behaviour required for I2C device. Based on [Circuits I2C's API](https://github.com/elixir-circuits/circuits_i2c/blob/main/lib/i2c.ex).
-  """
+  @moduledoc false
 
   @type bus_name :: String.t()
   @type bus_address :: 0..127
