@@ -20,12 +20,12 @@ defmodule AHT20Test do
     assert {:ok, _} = AHT20.start_link(config)
   end
 
-  test "read_data" do
+  test "measure" do
     AHT20.MockI2C
     |> Mox.expect(:read, 1, fn _ref, _address, _data -> {:ok, <<28, 38, 154, 118, 66, 231, 118>>} end)
 
     assert {:ok, pid} = AHT20.start_link(bus_name: "i2c-1", bus_address: 0x38)
-    assert {:ok, data} = AHT20.read_data(pid)
+    assert {:ok, data} = AHT20.measure(pid)
 
     assert data == %AHT20.Measurement{
              humidity_rh: 15.079402923583984,
