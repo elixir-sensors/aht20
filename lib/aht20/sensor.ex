@@ -12,7 +12,7 @@ defmodule AHT20.Sensor do
   @aht20_cmd_read_state 0x71
 
   @type bus_name :: AHT20.Transport.bus_name()
-  @type bus_address :: AHT20.Transport.address()
+  @type bus_address :: AHT20.Transport.bus_address()
 
   @typedoc """
   The configuration options.
@@ -36,13 +36,13 @@ defmodule AHT20.Sensor do
   """
   @spec start(config) :: {:ok, t} | {:error, any}
   def start(config \\ []) do
-    with bus_name <- config[:bus_name] || @default_bus_name,
-         bus_address <- config[:bus_address] || @default_bus_address,
+    with bus_name = config[:bus_name] || @default_bus_name,
+         bus_address = config[:bus_address] || @default_bus_address,
          {:ok, ref} <- AHT20.Transport.I2C.open(bus_name),
-         sensor <- __struct__(ref: ref, bus_address: bus_address),
+         sensor = __struct__(ref: ref, bus_address: bus_address),
          :ok <- Process.sleep(40),
          :ok <- reset(sensor),
-         :ok <- initialize(sensor) do
+         :ok <- init_sensor(sensor) do
       {:ok, sensor}
     else
       {:error, reason} -> {:error, reason}
@@ -60,15 +60,12 @@ defmodule AHT20.Sensor do
     with :ok <- AHT20.Transport.I2C.write(ref, bus_address, [@aht20_cmd_soft_reset]),
          :ok <- Process.sleep(20) do
       :ok
-    else
-      {:error, reason} -> {:error, reason}
     end
   end
 
   # Initialize the sensor system.
   # For more info. please refer to the data sheet (section 5.4).
-  @spec initialize(t) :: :ok | :no_return
-  defp initialize(%{ref: ref, bus_address: bus_address}) do
+  defp init_sensor(%{ref: ref, bus_address: bus_address}) do
     AHT20.Transport.I2C.write(ref, bus_address, [@aht20_cmd_initialize, 0x08, 0x00])
   end
 
@@ -80,8 +77,6 @@ defmodule AHT20.Sensor do
     with :ok <- AHT20.Transport.I2C.write(ref, bus_address, [@aht20_cmd_trigger_measurement, 0x33, 0x00]),
          :ok <- Process.sleep(75) do
       AHT20.Transport.I2C.read(ref, bus_address, 7)
-    else
-      {:error, reason} -> {:error, reason}
     end
   end
 
