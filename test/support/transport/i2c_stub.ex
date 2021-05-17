@@ -3,19 +3,23 @@ defmodule AHT20.Transport.I2C.Stub do
 
   @behaviour AHT20.Transport
 
-  def open(_bus_name) do
-    {:ok, Kernel.make_ref()}
+  def start_link(_opts) do
+    {:ok, :c.pid(0, 0, 0)}
   end
 
-  def write(_reference, _bus_address, _data) do
-    :ok
-  end
-
-  def read(_reference, _bus_address, _bytes_to_read) do
+  def read(_transport, _bytes_to_read) do
     {:ok, "stub"}
   end
 
-  def write_read(_reference, _bus_address, _data, _bytes_to_read) do
+  def write(_transport, _register_and_data) do
+    :ok
+  end
+
+  def write(_transport, _register, _data) do
+    :ok
+  end
+
+  def write_read(_transport, _register, _bytes_to_read) do
     {:ok, "stub"}
   end
 end

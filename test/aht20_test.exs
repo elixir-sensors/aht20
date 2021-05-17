@@ -22,7 +22,9 @@ defmodule AHT20Test do
 
   test "measure" do
     AHT20.MockI2C
-    |> Mox.expect(:read, 1, fn _ref, _address, _data -> {:ok, <<28, 38, 154, 118, 66, 231, 118>>} end)
+    |> Mox.expect(:read, 1, fn _transport, _register ->
+      {:ok, <<28, 38, 154, 118, 66, 231, 118>>}
+    end)
 
     assert {:ok, pid} = AHT20.start_link(bus_name: "i2c-1", bus_address: 0x38)
     assert {:ok, data} = AHT20.measure(pid)
@@ -32,14 +34,5 @@ defmodule AHT20Test do
              temperature_c: 28.26671600341797,
              temperature_f: 82.88008880615234
            }
-  end
-
-  test "read_state" do
-    AHT20.MockI2C
-    |> Mox.expect(:write_read, 1, fn _ref, _address, _data, _bytes_to_read -> {:ok, <<0b00011100>>} end)
-
-    assert {:ok, pid} = AHT20.start_link(bus_name: "i2c-1", bus_address: 0x38)
-    assert {:ok, state} = AHT20.read_state(pid)
-    assert state == %AHT20.State{busy: false, calibrated: true, mode: :nor}
   end
 end

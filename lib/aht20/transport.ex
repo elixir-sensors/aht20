@@ -3,16 +3,21 @@ defmodule AHT20.Transport do
 
   @type bus_name :: String.t()
   @type bus_address :: 0..127
+  @type transport :: pid
+  @type register :: non_neg_integer()
 
-  @callback open(bus_name) ::
-              {:ok, reference} | {:error, any}
+  @callback start_link(bus_name: bus_name, bus_address: bus_address) ::
+              {:ok, transport} | {:error, any}
 
-  @callback write(reference, bus_address, iodata) ::
-              :ok | {:error, any}
-
-  @callback read(reference, bus_address, integer) ::
+  @callback read(transport, integer) ::
               {:ok, binary} | {:error, any}
 
-  @callback write_read(reference, bus_address, iodata, integer) ::
+  @callback write(transport, iodata) ::
+              :ok | {:error, any}
+
+  @callback write(transport, register, iodata) ::
+              :ok | {:error, any}
+
+  @callback write_read(transport, register, integer) ::
               {:ok, binary} | {:error, any}
 end

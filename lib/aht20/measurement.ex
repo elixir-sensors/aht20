@@ -12,7 +12,7 @@ defmodule AHT20.Measurement do
         }
 
   @doc """
-  Converts raw sensor output into human-readable format.
+  Converts raw sensor output into human-readable struct.
 
       iex> AHT20.Measurement.from_sensor_output(<<28, 38, 154, 118, 66, 231, 118>>)
       %AHT20.Measurement{
@@ -20,6 +20,7 @@ defmodule AHT20.Measurement do
         temperature_c: 28.26671600341797,
         temperature_f: 82.88008880615234
       }
+
   """
   def from_sensor_output(<<_state, raw_humidity::20, raw_temperature::20, _crc>>) do
     __struct__(
