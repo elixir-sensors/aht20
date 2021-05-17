@@ -38,7 +38,7 @@ defmodule AHT20.Sensor do
   def start(config \\ []) do
     with bus_name <- config[:bus_name] || @default_bus_name,
          bus_address <- config[:bus_address] || @default_bus_address,
-         {:ok, ref} <- AHT20.I2CDevice.open(bus_name),
+         {:ok, ref} <- AHT20.Transport.I2C.open(bus_name),
          sensor <- __struct__(ref: ref, bus_address: bus_address),
          :ok <- Process.sleep(40),
          :ok <- reset(sensor),
@@ -57,7 +57,7 @@ defmodule AHT20.Sensor do
   """
   @spec reset(t) :: :ok | {:error, any}
   def reset(%{ref: ref, bus_address: bus_address}) do
-    with :ok <- AHT20.I2CDevice.write(ref, bus_address, [@aht20_cmd_soft_reset]),
+    with :ok <- AHT20.Transport.I2C.write(ref, bus_address, [@aht20_cmd_soft_reset]),
          :ok <- Process.sleep(20) do
       :ok
     else
@@ -69,7 +69,7 @@ defmodule AHT20.Sensor do
   # For more info. please refer to the data sheet (section 5.4).
   @spec initialize(t) :: :ok | :no_return
   defp initialize(%{ref: ref, bus_address: bus_address}) do
-    AHT20.I2CDevice.write(ref, bus_address, [@aht20_cmd_initialize, 0x08, 0x00])
+    AHT20.Transport.I2C.write(ref, bus_address, [@aht20_cmd_initialize, 0x08, 0x00])
   end
 
   @doc """
@@ -77,9 +77,9 @@ defmodule AHT20.Sensor do
   """
   @spec read_data(t) :: {:ok, <<_::56>>} | {:error, any}
   def read_data(%{ref: ref, bus_address: bus_address}) do
-    with :ok <- AHT20.I2CDevice.write(ref, bus_address, [@aht20_cmd_trigger_measurement, 0x33, 0x00]),
+    with :ok <- AHT20.Transport.I2C.write(ref, bus_address, [@aht20_cmd_trigger_measurement, 0x33, 0x00]),
          :ok <- Process.sleep(75) do
-      AHT20.I2CDevice.read(ref, bus_address, 7)
+      AHT20.Transport.I2C.read(ref, bus_address, 7)
     else
       {:error, reason} -> {:error, reason}
     end
@@ -91,6 +91,6 @@ defmodule AHT20.Sensor do
   """
   @spec read_state(t) :: {:ok, <<_::8>>} | {:error, any}
   def read_state(%{ref: ref, bus_address: bus_address}) do
-    AHT20.I2CDevice.write_read(ref, bus_address, [@aht20_cmd_read_state], 1)
+    AHT20.Transport.I2C.write_read(ref, bus_address, [@aht20_cmd_read_state], 1)
   end
 end

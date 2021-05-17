@@ -11,7 +11,7 @@ defmodule AHT20Test do
   setup :verify_on_exit!
 
   setup do
-    Mox.stub_with(AHT20.MockI2C, AHT20.I2CDevice.Stub)
+    Mox.stub_with(AHT20.MockI2C, AHT20.Transport.I2C.Stub)
     :ok
   end
 
