@@ -1,6 +1,6 @@
 defmodule AHT20 do
   @moduledoc """
-  Read temperature and humidity from a AHT20 sensor.
+  Read temperature and humidity from AHT20 sensor in Elixir.
   """
 
   use GenServer

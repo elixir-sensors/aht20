@@ -11,7 +11,7 @@ defmodule AHT20.MixProject do
       elixir: "~> 1.11",
       elixirc_paths: code(Mix.env()),
       start_permanent: Mix.env() == :prod,
-      description: "Use AHT20 temperature & humidity sensor in Elixir",
+      description: "Read temperature and humidity from AHT20 sensor in Elixir",
       deps: deps(),
       docs: docs(),
       package: package()
