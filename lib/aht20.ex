@@ -32,7 +32,10 @@ defmodule AHT20 do
 
   @impl true
   def init(config) do
-    {:ok, _sensor} = AHT20.Sensor.init(config)
+    case AHT20.Sensor.init(config) do
+      {:ok, sensor} -> {:ok, sensor}
+      {:error, reason} -> {:stop, reason}
+    end
   end
 
   @impl true

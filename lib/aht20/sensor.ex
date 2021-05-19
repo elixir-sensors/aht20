@@ -33,6 +33,8 @@ defmodule AHT20.Sensor do
          :ok <- Process.sleep(20),
          :ok <- AHT20.Transport.I2C.write(transport, [@aht20_cmd_initialize, <<0x08, 0x00>>]) do
       {:ok, __struct__(transport: transport, bus_address: bus_address)}
+    else
+      _error -> {:error, :device_not_found}
     end
   end
 
