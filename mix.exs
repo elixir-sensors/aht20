@@ -1,7 +1,7 @@
 defmodule AHT20.MixProject do
   use Mix.Project
 
-  @version "0.3.0"
+  @version "0.3.1"
   @source_url "https://github.com/mnishiguchi/aht20"
 
   def project do
@@ -25,7 +25,6 @@ defmodule AHT20.MixProject do
     ]
   end
 
-  # ensure test/support is compiled
   defp code(:test), do: ["lib", "test/support"]
   defp code(_), do: ["lib"]
 
