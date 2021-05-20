@@ -1,5 +1,7 @@
 defmodule AHT20.Sensor do
-  @moduledoc false
+  @moduledoc """
+  Represents the AHT20 sensor.
+  """
 
   use Bitwise, only_operators: true
 
@@ -15,6 +17,11 @@ defmodule AHT20.Sensor do
 
   @type config :: [{:bus_name, bus_name} | {:bus_address, bus_address}]
 
+  @typedoc """
+  The options that are required for the sensor initialization.
+  * `:bus_name` - which I2C bus to use (defaults to `"i2c-1"`)
+  * `:bus_address` - the address of the AHT20 (defaults to 0x38)
+  """
   @type t :: %__MODULE__{
           bus_address: bus_address,
           transport: pid

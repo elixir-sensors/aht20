@@ -1,5 +1,7 @@
 defmodule AHT20.Transport do
-  @moduledoc false
+  @moduledoc """
+  The communication bus between the target board and the AHT20 sensor.
+  """
 
   @type bus_name :: String.t()
   @type bus_address :: 0..127

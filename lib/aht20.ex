@@ -8,7 +8,7 @@ defmodule AHT20 do
   @typedoc """
   AHT20 GenServer start_link options
   * `:name` - a name for the GenServer
-  * `:bus_name` - which I2C bus to use (e.g., `"i2c-1"`)
+  * `:bus_name` - which I2C bus to use (defaults to `"i2c-1"`)
   * `:bus_address` - the address of the AHT20 (defaults to 0x38)
   """
   @type options() ::
