@@ -1,7 +1,7 @@
 defmodule AHT20.MixProject do
   use Mix.Project
 
-  @version "0.3.1"
+  @version "0.4.0"
   @source_url "https://github.com/mnishiguchi/aht20"
 
   def project do
@@ -31,7 +31,6 @@ defmodule AHT20.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      {:circuits_i2c, "~> 0.3"},
       {:i2c_server, "~> 0.2"},
       {:mox, "~> 1.0", only: :test},
       {:mix_test_watch, "~> 1.0", only: :dev, runtime: false},
