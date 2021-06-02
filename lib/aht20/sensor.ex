@@ -16,8 +16,7 @@ defmodule AHT20.Sensor do
       {:ok,
        sensor_output
        |> AHT20.Measurement.from_sensor_output()
-       |> AHT20.Measurement.put_dew_point_c()
-       |> AHT20.Measurement.put_temperature_f()}
+       |> AHT20.Measurement.put_dew_point_c()}
     end
   end
 end

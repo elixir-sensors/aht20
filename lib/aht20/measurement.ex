@@ -3,11 +3,10 @@ defmodule AHT20.Measurement do
   One sensor measurement report.
   """
 
-  defstruct [:temperature_c, :temperature_f, :humidity_rh, :dew_point_c, :timestamp_ms]
+  defstruct [:temperature_c, :humidity_rh, :dew_point_c, :timestamp_ms]
 
   @type t :: %__MODULE__{
           temperature_c: number,
-          temperature_f: number,
           humidity_rh: number,
           dew_point_c: number,
           timestamp_ms: number
@@ -29,9 +28,5 @@ defmodule AHT20.Measurement do
 
   def put_dew_point_c(measurement) do
     %{measurement | dew_point_c: AHT20.Calc.dew_point(measurement.humidity_rh, measurement.temperature_c)}
-  end
-
-  def put_temperature_f(measurement) do
-    %{measurement | temperature_f: AHT20.Calc.temperature_f_from_temperature_c(measurement.temperature_c)}
   end
 end

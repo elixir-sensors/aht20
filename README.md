@@ -17,9 +17,10 @@ iex> {:ok, pid} = AHT20.start_link(bus_name: "i2c-1", bus_address: 0x38)
 iex> AHT20.measure(pid)
 {:ok,
  %AHT20.Measurement{
-   humidity_rh: 15.079402923583984,
-   temperature_c: 28.26671600341797,
-   temperature_f: 82.88008880615234
+   dew_point_c: 15.486471933717919,
+   humidity_rh: 42.671871185302734,
+   temperature_c: 29.494285583496094,
+   timestamp_ms: 79084
  }}
 ```
 

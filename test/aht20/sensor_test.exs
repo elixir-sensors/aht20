@@ -29,7 +29,6 @@ defmodule AHT20.SensorTest do
               dew_point_c: 15.881025820111912,
               humidity_rh: 44.43206787109375,
               temperature_c: 29.23145294189453,
-              temperature_f: 84.61661529541016,
               timestamp_ms: _
             }} = result
   end
