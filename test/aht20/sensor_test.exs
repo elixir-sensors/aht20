@@ -19,17 +19,19 @@ defmodule AHT20.SensorTest do
   test "measure" do
     AHT20.MockI2C
     |> Mox.expect(:read, 1, fn _transport, _register ->
-      {:ok, <<28, 38, 154, 118, 66, 231, 118>>}
+      {:ok, <<28, 113, 191, 6, 86, 169, 149>>}
     end)
 
     result = AHT20.Sensor.measure(fake_transport())
 
     assert {:ok,
             %AHT20.Measurement{
-              humidity_rh: 15.079402923583984,
-              temperature_c: 28.26671600341797,
-              temperature_f: 82.88008880615234
-            }} == result
+              dew_point_c: 15.881025820111912,
+              humidity_rh: 44.43206787109375,
+              temperature_c: 29.23145294189453,
+              temperature_f: 84.61661529541016,
+              timestamp_ms: _
+            }} = result
   end
 
   defp fake_transport do

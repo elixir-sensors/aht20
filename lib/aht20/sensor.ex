@@ -13,7 +13,11 @@ defmodule AHT20.Sensor do
   @spec measure(pid) :: {:ok, map} | {:error, any}
   def measure(transport) do
     with {:ok, sensor_output} <- AHT20.Comm.measure(transport) do
-      {:ok, AHT20.Measurement.from_sensor_output(sensor_output)}
+      {:ok,
+       sensor_output
+       |> AHT20.Measurement.from_sensor_output()
+       |> AHT20.Measurement.put_dew_point_c()
+       |> AHT20.Measurement.put_temperature_f()}
     end
   end
 end
