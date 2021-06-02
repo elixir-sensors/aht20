@@ -1,5 +1,5 @@
 defmodule AHT20.SensorTest do
-  use ExUnit.Case
+  use ExUnit.Case, async: true
 
   # https://hexdocs.pm/mox/Mox.html
   import Mox
@@ -13,11 +13,7 @@ defmodule AHT20.SensorTest do
   end
 
   test "init" do
-    assert {:ok, %AHT20.Sensor{bus_address: 0x38, transport: _}} = AHT20.Sensor.init()
-    assert {:ok, %AHT20.Sensor{bus_address: 0x38, transport: _}} = AHT20.Sensor.init(bus_address: 0x38)
-
-    assert {:ok, %AHT20.Sensor{bus_address: 0x38, transport: _}} =
-             AHT20.Sensor.init(bus_name: "i2c-1", bus_address: 0x38)
+    assert :ok = AHT20.Sensor.init(fake_transport())
   end
 
   test "measure" do
@@ -26,13 +22,17 @@ defmodule AHT20.SensorTest do
       {:ok, <<28, 38, 154, 118, 66, 231, 118>>}
     end)
 
-    sensor = %AHT20.Sensor{bus_address: 0x38, transport: :c.pid(0, 0, 0)}
+    result = AHT20.Sensor.measure(fake_transport())
 
     assert {:ok,
             %AHT20.Measurement{
               humidity_rh: 15.079402923583984,
               temperature_c: 28.26671600341797,
               temperature_f: 82.88008880615234
-            }} = AHT20.Sensor.measure(sensor)
+            }} == result
+  end
+
+  defp fake_transport do
+    :c.pid(0, 0, 0)
   end
 end

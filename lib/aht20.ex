@@ -5,17 +5,25 @@ defmodule AHT20 do
 
   use GenServer
 
+  require Logger
+
+  @default_bus_name "i2c-1"
+  @default_bus_address 0x38
+
+  @type bus_name :: binary
+  @type bus_address :: 0..127
+
   @typedoc """
   AHT20 GenServer start_link options
   * `:name` - a name for the GenServer
   * `:bus_name` - which I2C bus to use (defaults to `"i2c-1"`)
   * `:bus_address` - the address of the AHT20 (defaults to 0x38)
   """
-  @type options() ::
-          [
-            name: GenServer.name()
-          ]
-          | AHT20.Sensor.config()
+  @type options() :: [
+          name: GenServer.name(),
+          bus_name: bus_name,
+          bus_address: bus_address
+        ]
 
   @doc """
   Start a new GenServer for interacting with a AHT20.
@@ -23,24 +31,38 @@ defmodule AHT20 do
   bus going to the AHT20.
   """
   @spec start_link(options()) :: GenServer.on_start()
-  def start_link(init_arg) do
-    options = Keyword.take(init_arg, [:name])
-    GenServer.start_link(__MODULE__, init_arg, options)
+  def start_link(init_arg \\ []) do
+    GenServer.start_link(__MODULE__, init_arg, name: init_arg[:name])
   end
 
   def measure(server), do: GenServer.call(server, :measure)
 
-  @impl true
+  @impl GenServer
   def init(config) do
-    case AHT20.Sensor.init(config) do
-      {:ok, sensor} -> {:ok, sensor}
-      {:error, reason} -> {:stop, reason}
+    bus_name = config[:bus_name] || @default_bus_name
+    bus_address = config[:bus_address] || @default_bus_address
+
+    Logger.info("[AHT20] Starting on bus #{bus_name} at address #{inspect(bus_address, base: :hex)}")
+
+    with {:ok, transport} <- AHT20.Transport.I2C.start_link(bus_name: bus_name, bus_address: bus_address),
+         :ok <- AHT20.Sensor.init(transport) do
+      {:ok, %{transport: transport}, {:continue, :init_sensor}}
+    else
+      _error ->
+        {:stop, :device_not_found}
     end
   end
 
-  @impl true
-  def handle_call(:measure, _from, sensor) do
-    result = AHT20.Sensor.measure(sensor)
-    {:reply, result, sensor}
+  @impl GenServer
+  def handle_continue(:init_sensor, state) do
+    Logger.info("[AHT20] Initializing sensor")
+    :ok = AHT20.Sensor.init(state.transport)
+    {:noreply, state}
+  end
+
+  @impl GenServer
+  def handle_call(:measure, _from, state) do
+    result = AHT20.Sensor.measure(state.transport)
+    {:reply, result, state}
   end
 end

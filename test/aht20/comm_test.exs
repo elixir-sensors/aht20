@@ -1,5 +1,5 @@
 defmodule AHT20.CommTest do
-  use ExUnit.Case
+  use ExUnit.Case, async: true
 
   # https://hexdocs.pm/mox/Mox.html
   import Mox

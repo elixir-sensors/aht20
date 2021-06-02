@@ -34,6 +34,18 @@ defmodule AHT20.Calc do
   """
   @spec temperature_f_from_raw(integer) :: float
   def temperature_f_from_raw(raw_temperature) do
-    temperature_c_from_raw(raw_temperature) * 9.0 / 5.0 + 32.0
+    temperature_f_from_temperature_c(temperature_c_from_raw(raw_temperature))
+  end
+
+  @doc """
+  Convert Celsius to Fahrenheit.
+
+      iex> AHT20.Calc.temperature_f_from_temperature_c(28.26671600341797)
+      82.88008880615234
+
+  """
+  @spec temperature_f_from_temperature_c(number) :: float
+  def temperature_f_from_temperature_c(temperature_c) do
+    temperature_c * 9.0 / 5.0 + 32.0
   end
 end

@@ -16,8 +16,8 @@ defmodule AHT20Test do
   end
 
   test "start_link" do
-    config = [bus_name: "i2c-1", bus_address: 0x38]
-    assert {:ok, _} = AHT20.start_link(config)
+    assert {:ok, transport} = AHT20.start_link(bus_name: "i2c-1", bus_address: 0x38)
+    assert is_pid(transport)
   end
 
   test "measure" do
@@ -26,7 +26,7 @@ defmodule AHT20Test do
       {:ok, <<28, 38, 154, 118, 66, 231, 118>>}
     end)
 
-    assert {:ok, pid} = AHT20.start_link(bus_name: "i2c-1", bus_address: 0x38)
+    assert {:ok, pid} = AHT20.start_link()
     assert {:ok, data} = AHT20.measure(pid)
 
     assert data == %AHT20.Measurement{
