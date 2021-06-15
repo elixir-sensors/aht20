@@ -8,7 +8,7 @@ defmodule AHT20.SensorTest do
   setup :verify_on_exit!
 
   setup do
-    Mox.stub_with(AHT20.MockI2C, AHT20.Transport.I2C.Stub)
+    Mox.stub_with(AHT20.MockTransport, AHT20.Transport.I2C.Stub)
     :ok
   end
 
@@ -17,7 +17,7 @@ defmodule AHT20.SensorTest do
   end
 
   test "measure" do
-    AHT20.MockI2C
+    AHT20.MockTransport
     |> Mox.expect(:read, 1, fn _transport, _register ->
       {:ok, <<28, 113, 191, 6, 86, 169, 149>>}
     end)

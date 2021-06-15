@@ -3,44 +3,24 @@ defmodule AHT20.Transport.I2C do
 
   @behaviour AHT20.Transport
 
-  def start_link(bus_name) do
-    apply(
-      transport_module(),
-      :start_link,
-      [bus_name]
-    )
+  def start_link(opts) do
+    transport_module().start_link(opts)
   end
 
   def read(transport, bytes_to_read) do
-    apply(
-      transport_module(),
-      :read,
-      [transport, bytes_to_read]
-    )
+    transport_module().read(transport, bytes_to_read)
   end
 
   def write(transport, register_and_data) do
-    apply(
-      transport_module(),
-      :write,
-      [transport, register_and_data]
-    )
+    transport_module().write(transport, register_and_data)
   end
 
   def write(transport, register, data) do
-    apply(
-      transport_module(),
-      :write,
-      [transport, register, data]
-    )
+    transport_module().write(transport, register, data)
   end
 
   def write_read(transport, register, bytes_to_read) do
-    apply(
-      transport_module(),
-      :write_read,
-      [transport, register, bytes_to_read]
-    )
+    transport_module().write_read(transport, register, bytes_to_read)
   end
 
   defp transport_module() do
