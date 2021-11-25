@@ -9,7 +9,6 @@ defmodule AHT20.MixProject do
       app: :aht20,
       version: @version,
       elixir: "~> 1.11",
-      elixirc_paths: code(Mix.env()),
       start_permanent: Mix.env() == :prod,
       description: "Read temperature and humidity from AHT20 sensor in Elixir",
       deps: deps(),
@@ -25,13 +24,10 @@ defmodule AHT20.MixProject do
     ]
   end
 
-  defp code(:test), do: ["lib", "test/support"]
-  defp code(_), do: ["lib"]
-
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      {:i2c_server, "~> 0.2"},
+      {:circuits_i2c, "~> 1.0"},
       {:mox, "~> 1.0", only: :test},
       {:mix_test_watch, "~> 1.0", only: :dev, runtime: false},
       {:ex_doc, "~> 0.14", only: :dev, runtime: false},

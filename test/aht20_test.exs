@@ -11,12 +11,12 @@ defmodule AHT20Test do
   setup :verify_on_exit!
 
   setup do
-    Mox.stub_with(AHT20.MockTransport, AHT20.Transport.I2C.Stub)
+    Mox.stub_with(AHT20.MockTransport, AHT20.Transport.Stub)
     :ok
   end
 
   test "start_link" do
-    assert {:ok, transport} = AHT20.start_link(bus_name: "i2c-1", bus_address: 0x38)
+    assert {:ok, transport} = AHT20.start_link(bus_name: "i2c-1")
     assert is_pid(transport)
   end
 

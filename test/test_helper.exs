@@ -6,7 +6,4 @@ end
 # Define dynamic mocks
 Mox.defmock(AHT20.MockTransport, for: AHT20.Transport)
 
-# Override the config settings
-Application.put_env(:aht20, :transport_module, AHT20.MockTransport)
-
 ExUnit.start()

@@ -8,29 +8,33 @@ defmodule AHT20.CommTest do
   setup :verify_on_exit!
 
   setup do
-    Mox.stub_with(AHT20.MockTransport, AHT20.Transport.I2C.Stub)
-    %{transport: :c.pid(0, 0, 0)}
+    Mox.stub_with(AHT20.MockTransport, AHT20.Transport.Stub)
+    :ok
   end
 
-  test "reset", %{transport: transport} do
+  test "reset" do
     AHT20.MockTransport
     |> Mox.expect(:write, 1, fn _transport, [0xBA] -> :ok end)
 
-    assert :ok = AHT20.Comm.reset(transport)
+    assert :ok = AHT20.Comm.reset(fake_transport())
   end
 
-  test "init", %{transport: transport} do
+  test "init" do
     AHT20.MockTransport
     |> Mox.expect(:write, 1, fn _transport, [0xBE, <<0x08, 0x00>>] -> :ok end)
 
-    assert :ok = AHT20.Comm.init(transport)
+    assert :ok = AHT20.Comm.init(fake_transport())
   end
 
-  test "measure", %{transport: transport} do
+  test "measure" do
     AHT20.MockTransport
     |> Mox.expect(:write, 1, fn _transport, [0xAC, <<0x33, 0x00>>] -> :ok end)
     |> Mox.expect(:read, 1, fn _transport, 7 -> {:ok, <<28, 38, 154, 118, 66, 231, 118>>} end)
 
-    assert {:ok, <<28, 38, 154, 118, 66, 231, 118>>} = AHT20.Comm.measure(transport)
+    assert {:ok, <<28, 38, 154, 118, 66, 231, 118>>} = AHT20.Comm.measure(fake_transport())
+  end
+
+  defp fake_transport() do
+    %AHT20.Transport{ref: make_ref(), bus_address: 0x00}
   end
 end

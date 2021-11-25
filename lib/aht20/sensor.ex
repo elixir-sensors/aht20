@@ -1,7 +1,7 @@
 defmodule AHT20.Sensor do
   @moduledoc false
 
-  @spec init(pid) :: :ok | {:error, any}
+  @spec init(AHT20.Transport.t()) :: :ok | {:error, any}
   def init(transport) do
     with :ok <- AHT20.Comm.reset(transport),
          :ok <- Process.sleep(10),
@@ -10,7 +10,7 @@ defmodule AHT20.Sensor do
     end
   end
 
-  @spec measure(pid) :: {:ok, map} | {:error, any}
+  @spec measure(AHT20.Transport.t()) :: {:ok, map} | {:error, any}
   def measure(transport) do
     with {:ok, sensor_output} <- AHT20.Comm.measure(transport) do
       {:ok,

@@ -8,7 +8,7 @@ defmodule AHT20.SensorTest do
   setup :verify_on_exit!
 
   setup do
-    Mox.stub_with(AHT20.MockTransport, AHT20.Transport.I2C.Stub)
+    Mox.stub_with(AHT20.MockTransport, AHT20.Transport.Stub)
     :ok
   end
 
@@ -33,7 +33,7 @@ defmodule AHT20.SensorTest do
             }} = result
   end
 
-  defp fake_transport do
-    :c.pid(0, 0, 0)
+  defp fake_transport() do
+    %AHT20.Transport{ref: make_ref(), bus_address: 0x00}
   end
 end

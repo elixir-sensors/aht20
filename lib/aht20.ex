@@ -37,7 +37,7 @@ defmodule AHT20 do
 
     Logger.info("[AHT20] Starting on bus #{bus_name} at address #{inspect(@aht20_address, base: :hex)}")
 
-    case AHT20.Transport.I2C.start_link(bus_name: bus_name, bus_address: @aht20_address) do
+    case transport_mod().open(bus_name: bus_name, bus_address: @aht20_address) do
       {:ok, transport} ->
         {:ok, %{transport: transport}, {:continue, :init_sensor}}
 
@@ -62,5 +62,9 @@ defmodule AHT20 do
   @impl GenServer
   def handle_call(:measure, _from, state) do
     {:reply, AHT20.Sensor.measure(state.transport), state}
+  end
+
+  defp transport_mod() do
+    Application.get_env(:aht20, :transport_mod, AHT20.Transport.I2C)
   end
 end

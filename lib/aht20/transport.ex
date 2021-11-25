@@ -3,23 +3,69 @@ defmodule AHT20.Transport do
   The communication bus between the target board and the AHT20 sensor.
   """
 
-  @type bus_name :: String.t()
-  @type bus_address :: 0..127
-  @type transport :: pid
-  @type register :: non_neg_integer()
+  defstruct [:ref, :bus_address]
 
-  @callback start_link(bus_name: bus_name, bus_address: bus_address) ::
-              {:ok, transport} | {:error, any}
+  @type t :: %__MODULE__{ref: reference(), bus_address: 0..127}
+  @type option :: {:bus_name, String.t()} | {:bus_address, 0..127}
 
-  @callback read(transport, integer) ::
-              {:ok, binary} | {:error, any}
+  @callback open([option()]) :: {:ok, t()} | {:error, any()}
 
-  @callback write(transport, iodata) ::
-              :ok | {:error, any}
+  @callback read(t(), pos_integer()) :: {:ok, binary()} | {:error, any()}
 
-  @callback write(transport, register, iodata) ::
-              :ok | {:error, any}
+  @callback write(t(), iodata()) :: :ok | {:error, any()}
 
-  @callback write_read(transport, register, integer) ::
-              {:ok, binary} | {:error, any}
+  @callback write_read(t(), iodata(), pos_integer()) :: {:ok, binary()} | {:error, any()}
+end
+
+defmodule AHT20.Transport.I2C do
+  @moduledoc false
+
+  @behaviour AHT20.Transport
+
+  @impl AHT20.Transport
+  def open(opts) do
+    bus_name = Access.fetch!(opts, :bus_name)
+    bus_address = Access.fetch!(opts, :bus_address)
+
+    case Circuits.I2C.open(bus_name) do
+      {:ok, ref} ->
+        {:ok, %AHT20.Transport{ref: ref, bus_address: bus_address}}
+
+      _ ->
+        :error
+    end
+  end
+
+  @impl AHT20.Transport
+  def read(transport, bytes_to_read) do
+    Circuits.I2C.read(transport.ref, transport.bus_address, bytes_to_read)
+  end
+
+  @impl AHT20.Transport
+  def write(transport, register_and_data) do
+    Circuits.I2C.write(transport.ref, transport.bus_address, register_and_data)
+  end
+
+  @impl AHT20.Transport
+  def write_read(transport, register, bytes_to_read) do
+    Circuits.I2C.write_read(transport.ref, transport.bus_address, register, bytes_to_read)
+  end
+end
+
+defmodule AHT20.Transport.Stub do
+  @moduledoc false
+
+  @behaviour AHT20.Transport
+
+  @impl AHT20.Transport
+  def open(_opts), do: {:ok, make_ref()}
+
+  @impl AHT20.Transport
+  def read(_transport, _bytes_to_read), do: {:ok, "stub"}
+
+  @impl AHT20.Transport
+  def write(_transport, _data), do: :ok
+
+  @impl AHT20.Transport
+  def write_read(_transport, _data, _bytes_to_read), do: {:ok, "stub"}
 end

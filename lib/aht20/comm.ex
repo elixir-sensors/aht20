@@ -7,7 +7,7 @@ defmodule AHT20.Comm do
   @aht20_cmd_trigger_measurement [0xAC, <<0x33, 0x00>>]
 
   def get_status(transport) do
-    case AHT20.Transport.I2C.write_read(transport, @aht20_cmd_status, 1) do
+    case transport_mod().write_read(transport, @aht20_cmd_status, 1) do
       {:ok, <<busy::1, _::3, calibrated::1, _::3>>} -> %{busy: busy, calibrated: calibrated}
       {:error, reason} -> {:error, reason}
     end
@@ -30,17 +30,21 @@ defmodule AHT20.Comm do
   end
 
   def reset(transport) do
-    AHT20.Transport.I2C.write(transport, @aht20_cmd_soft_reset)
+    transport_mod().write(transport, @aht20_cmd_soft_reset)
   end
 
   def init(transport) do
-    AHT20.Transport.I2C.write(transport, @aht20_cmd_initialize)
+    transport_mod().write(transport, @aht20_cmd_initialize)
   end
 
   def measure(transport) do
-    with :ok <- AHT20.Transport.I2C.write(transport, @aht20_cmd_trigger_measurement),
+    with :ok <- transport_mod().write(transport, @aht20_cmd_trigger_measurement),
          :ok <- Process.sleep(80) do
-      AHT20.Transport.I2C.read(transport, 7)
+      transport_mod().read(transport, 7)
     end
+  end
+
+  defp transport_mod() do
+    Application.get_env(:aht20, :transport_mod, AHT20.Transport.I2C)
   end
 end
