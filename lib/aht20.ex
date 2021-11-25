@@ -44,25 +44,30 @@ defmodule AHT20 do
 
     Logger.info("[AHT20] Starting on bus #{bus_name} at address #{inspect(bus_address, base: :hex)}")
 
-    with {:ok, transport} <- AHT20.Transport.I2C.start_link(bus_name: bus_name, bus_address: bus_address),
-         :ok <- AHT20.Sensor.init(transport) do
-      {:ok, %{transport: transport}, {:continue, :init_sensor}}
-    else
-      _error ->
-        {:stop, :device_not_found}
+    case AHT20.Transport.I2C.start_link(bus_name: bus_name, bus_address: bus_address) do
+      {:ok, transport} ->
+        {:ok, %{transport: transport}, {:continue, :init_sensor}}
+
+      error ->
+        raise("Error opening i2c: #{inspect(error)}")
     end
   end
 
   @impl GenServer
   def handle_continue(:init_sensor, state) do
     Logger.info("[AHT20] Initializing sensor")
-    :ok = AHT20.Sensor.init(state.transport)
-    {:noreply, state}
+
+    case AHT20.Sensor.init(state.transport) do
+      :ok ->
+        {:noreply, state}
+
+      error ->
+        raise("Error initializing sensor: #{inspect(error)}")
+    end
   end
 
   @impl GenServer
   def handle_call(:measure, _from, state) do
-    result = AHT20.Sensor.measure(state.transport)
-    {:reply, result, state}
+    {:reply, AHT20.Sensor.measure(state.transport), state}
   end
 end
