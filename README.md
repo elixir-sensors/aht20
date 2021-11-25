@@ -10,7 +10,7 @@ Read temperature and humidity from AHT20 sensor in Elixir.
 
 ```elixir
 # Connect to the sensor.
-iex> {:ok, pid} = AHT20.start_link(bus_name: "i2c-1", bus_address: 0x38)
+iex> {:ok, pid} = AHT20.start_link(bus_name: "i2c-1")
 {:ok, #PID<0.1407.0>}
 
 # Read the humidity and temperature from the sensor.

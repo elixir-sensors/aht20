@@ -8,29 +8,23 @@ defmodule AHT20 do
   require Logger
 
   @default_bus_name "i2c-1"
-  @default_bus_address 0x38
+  @aht20_address 0x38
 
   @type bus_name :: binary
-  @type bus_address :: 0..127
 
   @typedoc """
   AHT20 GenServer start_link options
   * `:name` - a name for the GenServer
   * `:bus_name` - which I2C bus to use (defaults to `"i2c-1"`)
-  * `:bus_address` - the address of the AHT20 (defaults to 0x38)
   """
-  @type options() :: [
-          name: GenServer.name(),
-          bus_name: bus_name,
-          bus_address: bus_address
-        ]
+  @type option() :: {:name, GenServer.name()} | {:bus_name, bus_name}
 
   @doc """
   Start a new GenServer for interacting with a AHT20.
   Normally, you'll want to pass the `:bus_name` option to specify the I2C
   bus going to the AHT20.
   """
-  @spec start_link(options()) :: GenServer.on_start()
+  @spec start_link([option()]) :: GenServer.on_start()
   def start_link(init_arg \\ []) do
     GenServer.start_link(__MODULE__, init_arg, name: init_arg[:name])
   end
@@ -40,11 +34,10 @@ defmodule AHT20 do
   @impl GenServer
   def init(config) do
     bus_name = config[:bus_name] || @default_bus_name
-    bus_address = config[:bus_address] || @default_bus_address
 
-    Logger.info("[AHT20] Starting on bus #{bus_name} at address #{inspect(bus_address, base: :hex)}")
+    Logger.info("[AHT20] Starting on bus #{bus_name} at address #{inspect(@aht20_address, base: :hex)}")
 
-    case AHT20.Transport.I2C.start_link(bus_name: bus_name, bus_address: bus_address) do
+    case AHT20.Transport.I2C.start_link(bus_name: bus_name, bus_address: @aht20_address) do
       {:ok, transport} ->
         {:ok, %{transport: transport}, {:continue, :init_sensor}}
 
