@@ -1,7 +1,7 @@
 defmodule AHT20.MixProject do
   use Mix.Project
 
-  @version "0.4.0"
+  @version "0.4.1"
   @source_url "https://github.com/mnishiguchi/aht20"
 
   def project do
@@ -29,9 +29,9 @@ defmodule AHT20.MixProject do
     [
       {:circuits_i2c, "~> 1.0"},
       {:mox, "~> 1.0", only: :test},
-      {:mix_test_watch, "~> 1.0", only: :dev, runtime: false},
-      {:ex_doc, "~> 0.14", only: :dev, runtime: false},
-      {:credo, "~> 1.4", only: [:dev, :test], runtime: false},
+      {:mix_test_watch, "~> 1.1", only: :dev, runtime: false},
+      {:ex_doc, "~> 0.26", only: :dev, runtime: false},
+      {:credo, "~> 1.6", only: [:dev, :test], runtime: false},
       {:dialyxir, "~> 1.1", only: [:dev, :test], runtime: false}
     ]
   end
