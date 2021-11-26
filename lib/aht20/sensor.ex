@@ -12,10 +12,7 @@ defmodule AHT20.Sensor do
   @spec measure(AHT20.Transport.t()) :: {:ok, AHT20.Measurement.t()} | {:error, any()}
   def measure(transport) do
     with {:ok, sensor_output} <- AHT20.Comm.measure(transport) do
-      {:ok,
-       sensor_output
-       |> AHT20.Measurement.from_sensor_output()
-       |> AHT20.Measurement.put_dew_point_c()}
+      {:ok, AHT20.Measurement.from_sensor_output(sensor_output)}
     end
   end
 end

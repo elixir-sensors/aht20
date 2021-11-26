@@ -25,6 +25,7 @@ defmodule AHT20.Measurement do
       temperature_c: AHT20.Calc.temperature_c_from_raw(raw_temperature),
       timestamp_ms: System.monotonic_time(:millisecond)
     )
+    |> put_dew_point_c()
   end
 
   @spec put_dew_point_c(t()) :: t()
