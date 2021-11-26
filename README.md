@@ -25,4 +25,4 @@ iex> AHT20.measure(pid)
 ```
 
 Depending on your hardware configuration, you may need to modify the call to
-`AHT20.start_link/1`. See `t:AHT20.options/0` for parameters.
+`AHT20.start_link/1`. See `t:AHT20.option/0` for parameters.

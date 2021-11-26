@@ -1,16 +1,15 @@
 defmodule AHT20.Sensor do
   @moduledoc false
 
-  @spec init(AHT20.Transport.t()) :: :ok | {:error, any}
+  @spec init(AHT20.Transport.t()) :: :ok | {:error, any()}
   def init(transport) do
     with :ok <- AHT20.Comm.reset(transport),
-         :ok <- Process.sleep(10),
-         :ok <- AHT20.Comm.init(transport) do
-      :ok
+         :ok <- Process.sleep(10) do
+      AHT20.Comm.init(transport)
     end
   end
 
-  @spec measure(AHT20.Transport.t()) :: {:ok, map} | {:error, any}
+  @spec measure(AHT20.Transport.t()) :: {:ok, AHT20.Measurement.t()} | {:error, any()}
   def measure(transport) do
     with {:ok, sensor_output} <- AHT20.Comm.measure(transport) do
       {:ok,

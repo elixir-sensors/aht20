@@ -1,7 +1,5 @@
 defmodule AHT20.Transport do
-  @moduledoc """
-  The communication bus between the target board and the AHT20 sensor.
-  """
+  @moduledoc false
 
   defstruct [:ref, :bus_address]
 
@@ -58,7 +56,7 @@ defmodule AHT20.Transport.Stub do
   @behaviour AHT20.Transport
 
   @impl AHT20.Transport
-  def open(_opts), do: {:ok, make_ref()}
+  def open(_opts), do: {:ok, %AHT20.Transport{ref: make_ref(), bus_address: 0x00}}
 
   @impl AHT20.Transport
   def read(_transport, _bytes_to_read), do: {:ok, "stub"}

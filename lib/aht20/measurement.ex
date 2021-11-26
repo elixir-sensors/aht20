@@ -18,6 +18,7 @@ defmodule AHT20.Measurement do
       iex> %AHT20.Measurement{} = AHT20.Measurement.from_sensor_output(<<28, 38, 154, 118, 66, 231, 118>>)
 
   """
+  @spec from_sensor_output(<<_::56>>) :: t()
   def from_sensor_output(<<_state, raw_humidity::20, raw_temperature::20, _crc>>) do
     __struct__(
       humidity_rh: AHT20.Calc.humidity_rh_from_raw(raw_humidity),
@@ -26,6 +27,7 @@ defmodule AHT20.Measurement do
     )
   end
 
+  @spec put_dew_point_c(t()) :: t()
   def put_dew_point_c(measurement) do
     %{measurement | dew_point_c: AHT20.Calc.dew_point(measurement.humidity_rh, measurement.temperature_c)}
   end

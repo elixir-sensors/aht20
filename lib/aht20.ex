@@ -10,14 +10,12 @@ defmodule AHT20 do
   @default_bus_name "i2c-1"
   @aht20_address 0x38
 
-  @type bus_name :: binary
-
   @typedoc """
   AHT20 GenServer start_link options
   * `:name` - a name for the GenServer
   * `:bus_name` - which I2C bus to use (defaults to `"i2c-1"`)
   """
-  @type option() :: {:name, GenServer.name()} | {:bus_name, bus_name}
+  @type option() :: {:name, GenServer.name()} | {:bus_name, String.t()}
 
   @doc """
   Start a new GenServer for interacting with a AHT20.
@@ -29,6 +27,7 @@ defmodule AHT20 do
     GenServer.start_link(__MODULE__, init_arg, name: init_arg[:name])
   end
 
+  @spec measure(GenServer.server()) :: {:ok, AHT20.Measurement.t()} | {:error, any()}
   def measure(server), do: GenServer.call(server, :measure)
 
   @impl GenServer
