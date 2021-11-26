@@ -12,21 +12,22 @@ defmodule AHT20 do
 
   @typedoc """
   AHT20 GenServer start_link options
-  * `:name` - a name for the GenServer
+  * `:name` - a name for the `GenServer`
   * `:bus_name` - which I2C bus to use (defaults to `"i2c-1"`)
   """
   @type option() :: {:name, GenServer.name()} | {:bus_name, String.t()}
 
   @doc """
-  Start a new GenServer for interacting with a AHT20.
-  Normally, you'll want to pass the `:bus_name` option to specify the I2C
-  bus going to the AHT20.
+  Starts a new GenServer for interacting with a AHT20.
   """
   @spec start_link([option()]) :: GenServer.on_start()
   def start_link(init_arg \\ []) do
     GenServer.start_link(__MODULE__, init_arg, name: init_arg[:name])
   end
 
+  @doc """
+  Measures the current temperature and humidity.
+  """
   @spec measure(GenServer.server()) :: {:ok, AHT20.Measurement.t()} | {:error, any()}
   def measure(server), do: GenServer.call(server, :measure)
 

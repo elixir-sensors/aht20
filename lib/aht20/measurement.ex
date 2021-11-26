@@ -13,9 +13,11 @@ defmodule AHT20.Measurement do
         }
 
   @doc """
-  Converts raw sensor output into human-readable struct.
+  Converts raw sensor output into human-readable format.
 
-      iex> %AHT20.Measurement{} = AHT20.Measurement.from_sensor_output(<<28, 38, 154, 118, 66, 231, 118>>)
+      iex> measurement = AHT20.Measurement.from_sensor_output(<<28, 38, 154, 118, 66, 231, 118>>)
+      ...> measurement.temperature_c
+      28.26671600341797
 
   """
   @spec from_sensor_output(<<_::56>>) :: t()
