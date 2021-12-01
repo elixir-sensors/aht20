@@ -29,8 +29,8 @@ defmodule AHT20.Transport.I2C do
       {:ok, ref} ->
         {:ok, %AHT20.Transport{ref: ref, bus_address: bus_address}}
 
-      _ ->
-        :error
+      {:error, reason} ->
+        {:error, reason}
     end
   end
 
