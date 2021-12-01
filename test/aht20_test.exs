@@ -22,7 +22,7 @@ defmodule AHT20Test do
 
   test "measure" do
     AHT20.MockTransport
-    |> Mox.expect(:read, 1, fn _transport, _register ->
+    |> Mox.expect(:read, 1, fn _transport, _data ->
       {:ok, <<28, 113, 191, 6, 86, 169, 149>>}
     end)
 

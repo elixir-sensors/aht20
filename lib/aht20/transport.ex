@@ -40,13 +40,13 @@ defmodule AHT20.Transport.I2C do
   end
 
   @impl AHT20.Transport
-  def write(transport, register_and_data) do
-    Circuits.I2C.write(transport.ref, transport.bus_address, register_and_data)
+  def write(transport, data) do
+    Circuits.I2C.write(transport.ref, transport.bus_address, data)
   end
 
   @impl AHT20.Transport
-  def write_read(transport, register, bytes_to_read) do
-    Circuits.I2C.write_read(transport.ref, transport.bus_address, register, bytes_to_read)
+  def write_read(transport, data, bytes_to_read) do
+    Circuits.I2C.write_read(transport.ref, transport.bus_address, data, bytes_to_read)
   end
 end
 
