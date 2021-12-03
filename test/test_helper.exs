@@ -6,4 +6,6 @@ end
 # Define dynamic mocks
 Mox.defmock(AHT20.MockTransport, for: AHT20.Transport)
 
+Application.put_env(:aht20, :transport_mod, AHT20.MockTransport)
+
 ExUnit.start()
