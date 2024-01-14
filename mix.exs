@@ -27,7 +27,7 @@ defmodule AHT20.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      {:circuits_i2c, "~> 1.0 or ~> 0.3"},
+      {:circuits_i2c, "~> 2.0 or ~> 1.0 or ~> 0.3.0"},
       {:mox, "~> 1.0", only: :test},
       {:mix_test_watch, "~> 1.1", only: :dev, runtime: false},
       {:ex_doc, "~> 0.26", only: :dev, runtime: false},
