@@ -35,7 +35,9 @@ defmodule AHT20 do
   def init(config) do
     bus_name = config[:bus_name] || @default_bus_name
 
-    Logger.info("[AHT20] Starting on bus #{bus_name} at address #{inspect(@aht20_address, base: :hex)}")
+    Logger.info(
+      "[AHT20] Starting on bus #{bus_name} at address #{inspect(@aht20_address, base: :hex)}"
+    )
 
     case transport_mod().open(bus_name: bus_name, bus_address: @aht20_address) do
       {:ok, transport} ->

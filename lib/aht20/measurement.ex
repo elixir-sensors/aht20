@@ -32,6 +32,9 @@ defmodule AHT20.Measurement do
 
   @spec put_dew_point_c(t()) :: t()
   defp put_dew_point_c(measurement) do
-    %{measurement | dew_point_c: AHT20.Calc.dew_point(measurement.humidity_rh, measurement.temperature_c)}
+    %{
+      measurement
+      | dew_point_c: AHT20.Calc.dew_point(measurement.humidity_rh, measurement.temperature_c)
+    }
   end
 end
