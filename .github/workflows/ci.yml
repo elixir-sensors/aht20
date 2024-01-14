@@ -15,8 +15,8 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        elixir: [1.11, 1.12]
-        otp: [23, 24]
+        elixir: [1.14, 1.15]
+        otp: [25, 26]
     steps:
       - name: Cancel Previous Runs
         uses: styfle/cancel-workflow-action@0.6.0
@@ -60,8 +60,8 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        elixir: [1.11, 1.12]
-        otp: [23, 24]
+        elixir: [1.14, 1.15]
+        otp: [25, 26]
     steps:
       - name: Cancel Previous Runs
         uses: styfle/cancel-workflow-action@0.6.0
@@ -105,8 +105,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        elixir: [1.11, 1.12]
-        otp: [23, 24]
+        elixir: [1.14, 1.15]
+        otp: [25, 26]
     steps:
       - name: Cancel Previous Runs
         uses: styfle/cancel-workflow-action@0.6.0
