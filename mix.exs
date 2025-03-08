@@ -2,7 +2,8 @@ defmodule AHT20.MixProject do
   use Mix.Project
 
   @version "0.4.3"
-  @source_url "https://github.com/mnishiguchi/aht20"
+  @source_url "https://github.com/elixir-sensors/aht20"
+  @reuse_compliance_url "https://api.reuse.software/info/github.com/elixir-sensors/aht20"
 
   def project do
     [
@@ -51,11 +52,15 @@ defmodule AHT20.MixProject do
         "lib",
         "mix.exs",
         "README.md",
-        "LICENSE*"
+        "CHANGELOG*",
+        "LICENSES",
+        "NOTICE",
+        "REUSE.toml"
       ],
-      licenses: ["MIT"],
+      licenses: ["Apache-2.0"],
       links: %{
         "GitHub" => @source_url,
+        "REUSE compliance" => @reuse_compliance_url,
         "AHT20 data sheet" =>
           "https://cdn-learn.adafruit.com/assets/assets/000/091/676/original/AHT20-datasheet-2020-4-16.pdf"
       }
