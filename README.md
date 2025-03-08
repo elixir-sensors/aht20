@@ -1,8 +1,9 @@
 # AHT20
 
-[![Hex.pm](https://img.shields.io/hexpm/v/aht20.svg)](https://hex.pm/packages/aht20)
-[![API docs](https://img.shields.io/hexpm/v/aht20.svg?label=docs)](https://hexdocs.pm/aht20)
-[![CI](https://github.com/mnishiguchi/AHT20/workflows/CI/badge.svg)](https://github.com/mnishiguchi/AHT20/actions)
+[![Hex version](https://img.shields.io/hexpm/v/aht20.svg "Hex version")](https://hex.pm/packages/aht20)
+[![API docs](https://img.shields.io/hexpm/v/aht20.svg?label=docs "API docs")](https://hexdocs.pm/aht20)
+[![CI](https://github.com/elixir-sensors/aht20/actions/workflows/ci.yml/badge.svg)](https://github.com/elixir-sensors/aht20/actions/workflows/ci.yml)
+[![REUSE status](https://api.reuse.software/badge/github.com/elixir-sensors/aht20)](https://api.reuse.software/info/github.com/elixir-sensors/aht20)
 
 Read temperature and humidity from AHT20 sensor in Elixir.
 
