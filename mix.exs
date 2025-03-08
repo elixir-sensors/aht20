@@ -1,7 +1,7 @@
 defmodule AHT20.MixProject do
   use Mix.Project
 
-  @version "0.4.3"
+  @version "0.4.4"
   @source_url "https://github.com/elixir-sensors/aht20"
   @reuse_compliance_url "https://api.reuse.software/info/github.com/elixir-sensors/aht20"
 

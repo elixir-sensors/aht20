@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.4.4
+
+- Changes
+  - Update dependencies
+  - REUSE compliance
+
 ## v0.4.3
 
 - Changes
